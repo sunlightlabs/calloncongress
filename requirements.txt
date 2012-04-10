@@ -1,0 +1,4 @@
+Flask==0.8
+requests==0.11.1
+twilio==3.3.6
+sunlight==1.1.1
