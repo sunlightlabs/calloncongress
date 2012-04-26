@@ -1,5 +1,7 @@
+import os
 import datetime
 import pymongo
+from urlparse import urlparse
 
 from flask import Flask, g
 from calloncongress.web import web
@@ -19,8 +21,17 @@ def before_request():
     Sets up request context by setting current request time (UTC),
     creating MongoDB connection and reference to collection.
     """
+    try:
+        mongo_uri = os.environ['MONGOLAB_URI']
+    except KeyError:
+        mongo_uri = os.environ.get('MONGOHQ_URI', None)
+
+    if mongo_uri:
+        g.conn = pymongo.Connection(host=mongo_uri)
+    else:
+        g.conn = pymongo.Connection()
+
     g.now = datetime.datetime.utcnow()
-    g.conn = pymongo.Connection()
     g.db = g.conn.capitolphone
 
 
