@@ -1,9 +1,9 @@
-import os
 import datetime
 import pymongo
-from urlparse import urlparse
 
+from raven.contrib.flask import Sentry
 from flask import Flask, g
+from calloncongress import settings
 from calloncongress.web import web
 from calloncongress.voice import voice
 # from calloncongress.sms import sms
@@ -14,6 +14,13 @@ app.register_blueprint(web)
 app.register_blueprint(voice, url_prefix='/voice')
 # app.register_blueprint(sms, url_prefix='/sms')
 
+# init sentry if a DSN is present
+try:
+    app.config['SENTRY_DSN'] = settings.SENTRY_DSN
+    sentry = Sentry(app)
+except AttributeError:
+    pass
+
 
 @app.before_request
 def before_request():
@@ -21,11 +28,11 @@ def before_request():
     Sets up request context by setting current request time (UTC),
     creating MongoDB connection and reference to collection.
     """
-    try:
-        mongo_uri = os.environ['MONGOLAB_URI']
-    except KeyError:
-        mongo_uri = os.environ.get('MONGOHQ_URI', None)
-
+    mongo_uri = getattr(settings, 'MONGO_URI', None)
+    if not mongo_uri:
+        mongo_uri = getattr(settings, 'MONGOLAB_URI', None)
+    if not mongo_uri:
+        mongo_uri = getattr(settings, 'MONGOHQ_URI', None)
     if mongo_uri:
         g.conn = pymongo.Connection(host=mongo_uri)
     else:

@@ -6,3 +6,5 @@ python-sunlightapi
 sunlight
 jinja2
 pymongo
+raven>=1.7.3
+blinker
