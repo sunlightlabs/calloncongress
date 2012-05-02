@@ -1,5 +1,6 @@
 import datetime
 import pymongo
+import urlparse
 
 from raven.contrib.flask import Sentry
 from flask import Flask, g, request
@@ -37,9 +38,12 @@ def before_request():
         g.conn = pymongo.Connection(host=mongo_uri)
     else:
         g.conn = pymongo.Connection()
-
+    try:
+        db_name = urlparse.urlparse(mongo_uri).path.strip('/')
+    except AttributeError:
+        db_name = 'capitolphone'
     g.now = datetime.datetime.utcnow()
-    g.db = g.conn.capitolphone
+    g.db = getattr(g.conn, db_name)
 
 
 @app.before_request
