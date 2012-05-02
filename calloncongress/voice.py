@@ -2,6 +2,7 @@ from flask import Blueprint, g, request
 from twilio import twiml
 
 from calloncongress import data
+from calloncongress.i18n import translate
 from calloncongress.utils import twilioify
 
 voice = Blueprint('voice', __name__)

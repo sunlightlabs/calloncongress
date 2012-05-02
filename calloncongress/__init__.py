@@ -2,7 +2,7 @@ import datetime
 import pymongo
 
 from raven.contrib.flask import Sentry
-from flask import Flask, g
+from flask import Flask, g, request
 from calloncongress import settings
 from calloncongress.web import web
 from calloncongress.voice import voice
@@ -11,7 +11,7 @@ from calloncongress.voice import voice
 
 app = Flask(__name__)
 app.register_blueprint(web)
-app.register_blueprint(voice, url_prefix='/voice')
+app.register_blueprint(voice, url_prefix='/voice/<lang>')
 # app.register_blueprint(sms, url_prefix='/sms')
 
 # init sentry if a DSN is present
@@ -40,6 +40,15 @@ def before_request():
 
     g.now = datetime.datetime.utcnow()
     g.db = g.conn.capitolphone
+
+
+@app.before_request
+def detect_language():
+    if request.view_args:
+        lang = request.view_args.pop('lang', 'en')
+    else:
+        lang = 'en'
+    g.language_code = lang
 
 
 @app.after_request
