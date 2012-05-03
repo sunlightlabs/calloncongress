@@ -22,7 +22,16 @@ except ImportError:
                     ('.py', 'rb', imp.PY_SOURCE)
                 ).__dict__.keys():
                 if os.environ.get(key) is not None:
-                    setattr(sys.modules[__name__], key, os.environ.get(key))
+                    setting = os.environ.get(key)
+                    if setting == 'False':
+                        setting = False
+                    else:
+                        try:
+                            float(setting)
+                            setting = int(setting)
+                        except ValueError:
+                            pass
+                    setattr(sys.modules[__name__], key, setting)
     except Exception, e:
         raise ImportError('Got %s trying to initialize settings.' % e)
     finally:
