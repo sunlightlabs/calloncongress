@@ -7,3 +7,5 @@ SENTRY_DSN = ""
 MONGOLAB_URI = ""
 MONGOHQ_URI = ""
 MONGO_URI = ""
+
+AUDIO_ROOT = "/audio"
