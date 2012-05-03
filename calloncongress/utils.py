@@ -14,22 +14,20 @@ def twilioify(func):
     @wraps(func)
     def decorated(*args, **kwargs):
 
-        params = request.form if request.method == 'POST' else request.args
-
-        if 'CallSid' not in params:
+        if 'CallSid' not in request.values:
             return abort(404)
 
         validator = RequestValidator(settings.TWILIO_AUTH_TOKEN)
         sig_header = request.headers.get('X-Twilio-Signature', '')
 
-        print request.base_url, params, sig_header
+        vparams = request.values if request.method == 'POST' else {}
 
         # validator params are called URL, POST vars, and signature
-        if not validator.validate(request.base_url, params, sig_header):
+        if not validator.validate(request.url, vparams, sig_header):
             return abort(401)
 
         # load the call from Mongo or create if one does not exist
-        g.call = load_call(request.form['CallSid'], params)
+        g.call = load_call(request.form['CallSid'], request.values)
 
         g.zipcode = g.call['context'].get('zipcode', None)
         g.legislator = g.call['context'].get('legislator', None)
