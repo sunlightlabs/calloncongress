@@ -1,22 +1,17 @@
-from flask import g
-from twilio import twiml
 import hashlib
 
-
-class LanguageResponse(twiml.Response):
-
-    def say(self, *args, **kwargs):
-        return super(LanguageResponse, self).say(*args, **kwargs)
+from flask import g
+from calloncongress import settings
 
 
 def lang_url(fn):
-    lang = getattr(g, 'language_code', 'en')
-    return "%s/%s" % (lang, fn)
+    lang = g.call.get['language']
+    return "%s/%s/%s" % (settings.AUDIO_ROOT, lang, fn)
 
 
 def translate(s):
     hsh = hashlib.md5(s).hexdigest()
-    trans = g.db.translations.find_one({'hash': hsh, 'lang': getattr(g, 'language_code', 'en')})
+    trans = g.db.translations.find_one({'hash': hsh, 'lang': g.call.get['language']})
     if trans:
         return trans.translation
     return s
