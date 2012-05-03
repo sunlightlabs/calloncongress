@@ -5,8 +5,8 @@ LANGUAGES = (
     ('es', 'Spanish'),
     ('eo', 'Esperanto')
 )
-
 DEFAULT_LANGUAGE = 'en'
+UPCOMING_BILL_DAYS = 14
 
 # Import local settings or from os.environ
 try:
