@@ -12,7 +12,7 @@ from calloncongress.voice import voice
 
 app = Flask(__name__)
 app.register_blueprint(web)
-app.register_blueprint(voice, url_prefix='/voice/<lang>')
+app.register_blueprint(voice, url_prefix='/voice')
 # app.register_blueprint(sms, url_prefix='/sms')
 
 # init sentry if a DSN is present
@@ -42,17 +42,9 @@ def before_request():
         db_name = urlparse.urlparse(mongo_uri).path.strip('/')
     except AttributeError:
         db_name = 'capitolphone'
+
     g.now = datetime.datetime.utcnow()
     g.db = getattr(g.conn, db_name)
-
-
-@app.before_request
-def detect_language():
-    if request.view_args:
-        lang = request.view_args.pop('lang', 'en')
-    else:
-        lang = 'en'
-    g.language_code = lang
 
 
 @app.after_request
