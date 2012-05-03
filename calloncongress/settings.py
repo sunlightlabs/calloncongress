@@ -4,7 +4,9 @@ LANGUAGES = (
     ('en', 'English'),
     ('es', 'Spanish'),
     ('eo', 'Esperanto')
-    )
+)
+
+DEFAULT_LANGUAGE = 'en'
 
 # Import local settings or from os.environ
 try:
