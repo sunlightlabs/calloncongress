@@ -23,7 +23,7 @@ except ImportError:
                 ).__dict__.keys():
                 if os.environ.get(key) is not None:
                     setting = os.environ.get(key)
-                    if setting == 'False':
+                    if setting.lower() == 'false':
                         setting = False
                     else:
                         try:
