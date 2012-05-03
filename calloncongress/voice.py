@@ -2,15 +2,40 @@ from flask import Blueprint, g, request
 from twilio import twiml
 
 from calloncongress import data
-from calloncongress.i18n import translate
 from calloncongress.utils import twilioify
 
 voice = Blueprint('voice', __name__)
 
 
-@voice.route("/", methods=['GET', 'POST'])
+@voice.route("", methods=['GET', 'POST'])
 @twilioify
 def call_init():
+
+    r = twiml.Response()
+
+    if request.method == 'POST':
+
+        options = {
+            '1': 'en',
+            '2': 'es',
+        }
+
+        sel = request.form.get('Digits')
+        g.call['language'] = options.get(sel, 'en')
+
+        r.redirect('/voice/welcome')
+
+    else:
+        with r.gather(numDigits=1, timeout=10, action='/voice', method='POST') as rg:
+            rg.say('Welcome to Call on Congress. Press 1 to continue in English.', language='en')
+            rg.say('Presione 2 para continuar en espanol.', language='es')
+
+    return str(r)
+
+
+@voice.route("/welcome", methods=['GET', 'POST'])
+@twilioify
+def welcome():
     """ Initiate a new call. Welcomes the user and prompts for zipcode.
     """
 
