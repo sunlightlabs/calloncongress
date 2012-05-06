@@ -294,13 +294,17 @@ def upcoming_bills():
     else:
         r.say('The following bills are coming up in the next few days:')
         for bill in bills:
+            try:
+                ctx = bill.context
+            except AttributeError:
+                ctx = []
             bill_context = {
                 'date': dateparse(bill.legislative_day).strftime('%B %e'),
                 'chamber': bill.chamber,
                 'bill_type': bill_type(bill.bill_id),
                 'bill_number': bill.bill['number'],
                 'bill_title': bill.bill['official_title'].encode('ascii', 'ignore'),
-                'bill_description': '\n'.join(bill.context).encode('ascii', 'ignore')
+                'bill_description': '\n'.join(ctx).encode('ascii', 'ignore')
             }
             r.say('''On {date}, the {chamber} will discuss {bill_type} {bill_number},
                      {bill_title}. {bill_description}
