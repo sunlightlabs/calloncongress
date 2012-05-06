@@ -87,11 +87,11 @@ def handle_selection(selection):
             rg.play('http://assets.sunlightfoundation.com/projects/transparencyconnect/audio/9.wav')
 
     elif selection == '0':
-        r.redirect(url_for('zipcode'))
+        r.redirect(url_for('.zipcode'))
 
     else:
         r.say("I'm sorry, I don't recognize that selection. I will read you the options again.")
-        r.redirect(url_for('reps'))
+        r.redirect(url_for('.reps'))
 
     return r
 
@@ -112,10 +112,10 @@ def index():
         sel = request.form.get('Digits')
         g.call['language'] = options.get(sel, 'en')
 
-        r.redirect(url_for('welcome'))
+        r.redirect(url_for('.welcome'))
 
     else:
-        with r.gather(numDigits=1, timeout=10, action=url_for('index'), method='POST') as rg:
+        with r.gather(numDigits=1, timeout=10, action=url_for('.index'), method='POST') as rg:
             rg.say('Welcome to Call on Congress. Press 1 to continue in English.', language='en')
             rg.say('Presione 2 para continuar en espanol.', language='es')
 
@@ -197,7 +197,7 @@ def reps():
 
         if digits == '0':
 
-            r.redirect(url_for('index'))
+            r.redirect(url_for('.index'))
             return r  # shortcut the process and start over
 
         else:
@@ -232,7 +232,7 @@ def next(next_selection):
         return handle_selection(next_selection)
     else:
         r = twiml.Response()
-        r.redirect(url_for('reps'))
+        r.redirect(url_for('.reps'))
         return r
 
 
@@ -253,21 +253,21 @@ def signup():
 
         r.play('http://assets.sunlightfoundation.com/projects/transparencyconnect/audio/9-1.wav')
 
-        r.redirect(url_for('reps'))
+        r.redirect(url_for('.reps'))
 
     elif selection == '2':
 
         r.play('http://assets.sunlightfoundation.com/projects/transparencyconnect/audio/9-2.wav')
         r.record(action='/message', timeout=10, maxLength=120)
-        r.redirect(url_for('reps'))
+        r.redirect(url_for('.reps'))
 
     elif selection == '3':
 
         r.play('http://assets.sunlightfoundation.com/projects/transparencyconnect/audio/9-3.wav')
-        r.redirect(url_for('reps'))
+        r.redirect(url_for('.reps'))
 
     else:
-        r.redirect(url_for('reps'))
+        r.redirect(url_for('.reps'))
 
     return r
 
@@ -280,7 +280,7 @@ def message():
         'timestamp': g.now,
     })
     r = twiml.Response()
-    r.redirect(url_for('reps'))
+    r.redirect(url_for('.reps'))
     return r
 
 
