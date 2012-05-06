@@ -35,7 +35,7 @@ def handle_selection(selection):
         r.play('http://assets.sunlightfoundation.com/projects/transparencyconnect/audio/1.wav')
         r.say(script)
 
-        with r.gather(numDigits=1, timeout=10, action='/next/2') as rg:
+        with r.gather(numDigits=1, timeout=10, action=url_for('.next', next_selection='2')) as rg:
             rg.play('http://assets.sunlightfoundation.com/projects/transparencyconnect/audio/1-out.wav')
 
     elif selection == '2':
@@ -47,7 +47,7 @@ def handle_selection(selection):
         r.play('http://assets.sunlightfoundation.com/projects/transparencyconnect/audio/2.wav')
         r.say("%s. %s" % (g.legislator['fullname'], script))
 
-        with r.gather(numDigits=1, timeout=10, action='/next/3') as rg:
+        with r.gather(numDigits=1, timeout=10, action=url_for('.next', next_selection='3')) as rg:
             rg.play('http://assets.sunlightfoundation.com/projects/transparencyconnect/audio/2-out.wav')
 
     elif selection == '3':
@@ -56,7 +56,7 @@ def handle_selection(selection):
 
         r.say(bio or ('Sorry, we were unable to locate a biography for %s' % g.legislator['fullname']))
 
-        with r.gather(numDigits=1, timeout=10, action='/next/4') as rg:
+        with r.gather(numDigits=1, timeout=10, action=url_for('.next', next_selection='4')) as rg:
             rg.play('http://assets.sunlightfoundation.com/projects/transparencyconnect/audio/3-out.wav')
 
     elif selection == '4':
@@ -67,7 +67,7 @@ def handle_selection(selection):
         r.play('http://assets.sunlightfoundation.com/projects/transparencyconnect/audio/4.wav')
         r.say(comms)
 
-        with r.gather(numDigits=1, timeout=10, action='/next/5') as rg:
+        with r.gather(numDigits=1, timeout=10, action=url_for('.next', next_selection='5')) as rg:
             rg.play('http://assets.sunlightfoundation.com/projects/transparencyconnect/audio/4-out.wav')
 
     elif selection == '5':
@@ -83,7 +83,7 @@ def handle_selection(selection):
 
     elif selection == '9':
 
-        with r.gather(numDigits=1, timeout=10, action='/signup') as rg:
+        with r.gather(numDigits=1, timeout=10, action=url_for('.signup')) as rg:
             rg.play('http://assets.sunlightfoundation.com/projects/transparencyconnect/audio/9.wav')
 
     elif selection == '0':
@@ -130,11 +130,11 @@ def welcome():
 
     r = twiml.Response()
     #r.say("Welcome to CapitolPhone brought to you by the Sunlight Foundation.")
-    #with r.gather(numDigits=5, timeout=10, action='/zipcode') as rg:
+    #with r.gather(numDigits=5, timeout=10, action=url_for('.zipcode')) as rg:
         #rg.say("In order to locate your representatives, please enter your five digit zipcode now.")
 
     r.play("http://assets.sunlightfoundation.com/projects/transparencyconnect/audio/intro.wav")
-    r.gather(numDigits=5, timeout=10, action='/zipcode')
+    r.gather(numDigits=5, timeout=10, action=url_for('.zipcode'))
 
     return r
 
@@ -174,13 +174,13 @@ def zipcode():
             else:
                 r.play('http://assets.sunlightfoundation.com/projects/transparencyconnect/audio/selectleg.wav')
 
-            with r.gather(numDigits=1, timeout=10, action='/reps') as rg:
+            with r.gather(numDigits=1, timeout=10, action=url_for('.reps')) as rg:
                 rg.say(script)
 
         else:
 
             r.say("I'm sorry, I wasn't able to locate any representatives for %s." % (" ".join(zipcode),))
-            with r.gather(numDigits=5, timeout=10, action='/zipcode') as rg:
+            with r.gather(numDigits=5, timeout=10, action=url_for('.zipcode')) as rg:
                 rg.say("Please try again or enter a new zipcode.")
 
     return r
@@ -211,7 +211,7 @@ def reps():
 
     r.play('http://assets.sunlightfoundation.com/projects/transparencyconnect/audio/mainmenu-intro.wav')
     r.say('%s' % legislator['fullname'])
-    with r.gather(numDigits=1, timeout=30, action='/rep') as rg:
+    with r.gather(numDigits=1, timeout=30, action=url_for('.rep')) as rg:
         rg.play('http://assets.sunlightfoundation.com/projects/transparencyconnect/audio/mainmenu.wav')
 
     return r
@@ -258,7 +258,7 @@ def signup():
     elif selection == '2':
 
         r.play('http://assets.sunlightfoundation.com/projects/transparencyconnect/audio/9-2.wav')
-        r.record(action='/message', timeout=10, maxLength=120)
+        r.record(action=url_for('.message'), timeout=10, maxLength=120)
         r.redirect(url_for('.reps'))
 
     elif selection == '3':
