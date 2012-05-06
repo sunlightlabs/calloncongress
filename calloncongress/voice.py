@@ -115,7 +115,7 @@ def index():
         r.redirect(url_for('welcome'))
 
     else:
-        with r.gather(numDigits=1, timeout=10, action='/voice', method='POST') as rg:
+        with r.gather(numDigits=1, timeout=10, action=url_for('index'), method='POST') as rg:
             rg.say('Welcome to Call on Congress. Press 1 to continue in English.', language='en')
             rg.say('Presione 2 para continuar en espanol.', language='es')
 
