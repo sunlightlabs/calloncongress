@@ -285,7 +285,7 @@ def message():
 
 
 @voice.route("/upcoming-bills", methods=['GET', 'POST'])
-@twilioify
+# @twilioify
 def upcoming_bills():
     r = twiml.Response()
     bills = data.upcoming_bills()[:9]
