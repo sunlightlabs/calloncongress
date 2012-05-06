@@ -109,7 +109,7 @@ def index():
             '2': 'es',
         }
 
-        sel = request.form.get('Digits')
+        sel = request.values.get('Digits')
         g.call['language'] = options.get(sel, 'en')
 
         r.redirect(url_for('.welcome'))
@@ -139,13 +139,13 @@ def welcome():
     return r
 
 
-@voice.route("/zipcode/", methods=['POST'])
+@voice.route("/zipcode/", methods=['GET', 'POST'])
 @twilioify
 def zipcode():
     """ Handles POSTed zipcode and prompts for legislator selection.
     """
 
-    zipcode = request.form.get('Digits', g.zipcode)
+    zipcode = request.values.get('Digits', g.zipcode)
     r = twiml.Response()
 
     if zipcode == '00000':
@@ -186,14 +186,14 @@ def zipcode():
     return r
 
 
-@voice.route("/reps/", methods=['POST'])
+@voice.route("/reps/", methods=['GET', 'POST'])
 @twilioify
 def reps():
     r = twiml.Response()
 
-    if 'Digits' in request.form:
+    if 'Digits' in request.values:
 
-        digits = request.form.get('Digits', None)
+        digits = request.values.get('Digits', None)
 
         if digits == '0':
 
@@ -217,17 +217,17 @@ def reps():
     return r
 
 
-@voice.route("/rep/", methods=['POST'])
+@voice.route("/rep/", methods=['GET', 'POST'])
 @twilioify
 def rep():
-    selection = request.form.get('Digits', None)
+    selection = request.values.get('Digits', None)
     return handle_selection(selection)
 
 
-@voice.route("/next/<next_selection>/", methods=['POST'])
+@voice.route("/next/<next_selection>/", methods=['GET', 'POST'])
 @twilioify
 def next(next_selection):
-    selection = request.form.get('Digits', None)
+    selection = request.values.get('Digits', None)
     if selection == '1':
         return handle_selection(next_selection)
     else:
@@ -236,13 +236,13 @@ def next(next_selection):
         return r
 
 
-@voice.route("/signup/", methods=['POST'])
+@voice.route("/signup/", methods=['GET', 'POST'])
 @twilioify
 def signup():
 
     r = twiml.Response()
 
-    selection = request.form.get('Digits', None)
+    selection = request.values.get('Digits', None)
 
     if selection == '1':
 
@@ -272,11 +272,11 @@ def signup():
     return r
 
 
-@voice.route("/message/", methods=['POST'])
+@voice.route("/message/", methods=['GET', 'POST'])
 @twilioify
 def message():
     g.db.messages.insert({
-        'url': request.form['RecordingUrl'],
+        'url': request.values['RecordingUrl'],
         'timestamp': g.now,
     })
     r = twiml.Response()
@@ -313,7 +313,7 @@ def upcoming_bills():
     return r
 
 
-@voice.route("/test/", methods=['GET'])
+@voice.route("/test/", methods=['GET', 'POST'])
 def test_method():
     r = data.recent_votes({'bioguide_id': 'V000128'})
     return str(r)
