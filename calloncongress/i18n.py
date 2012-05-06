@@ -6,7 +6,7 @@ from calloncongress import settings
 
 def lang_url(fn):
     lang = g.call.get['language']
-    return "%s/%s/%s" % (settings.AUDIO_ROOT, lang, fn)
+    return "%s/%s/%s/" % (settings.AUDIO_ROOT, lang, fn)
 
 
 def translate(s):

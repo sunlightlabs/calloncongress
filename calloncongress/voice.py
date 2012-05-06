@@ -1,6 +1,6 @@
 import re
 
-from flask import Blueprint, g, request, redirect
+from flask import Blueprint, g, request, url_for
 from dateutil.parser import parse as dateparse
 from twilio import twiml
 
@@ -87,18 +87,18 @@ def handle_selection(selection):
             rg.play('http://assets.sunlightfoundation.com/projects/transparencyconnect/audio/9.wav')
 
     elif selection == '0':
-        r.redirect('/zipcode')
+        r.redirect(url_for('zipcode'))
 
     else:
         r.say("I'm sorry, I don't recognize that selection. I will read you the options again.")
-        r.redirect('/reps')
+        r.redirect(url_for('reps'))
 
     return r
 
 
-@voice.route("", methods=['GET', 'POST'])
+@voice.route("/", methods=['GET', 'POST'])
 @twilioify
-def call_init():
+def index():
 
     r = twiml.Response()
 
@@ -112,7 +112,7 @@ def call_init():
         sel = request.form.get('Digits')
         g.call['language'] = options.get(sel, 'en')
 
-        r.redirect('/voice/welcome')
+        r.redirect(url_for('welcome'))
 
     else:
         with r.gather(numDigits=1, timeout=10, action='/voice', method='POST') as rg:
@@ -122,7 +122,7 @@ def call_init():
     return str(r)
 
 
-@voice.route("/welcome", methods=['GET', 'POST'])
+@voice.route("/welcome/", methods=['GET', 'POST'])
 @twilioify
 def welcome():
     """ Initiate a new call. Welcomes the user and prompts for zipcode.
@@ -139,7 +139,7 @@ def welcome():
     return r
 
 
-@voice.route("/zipcode", methods=['POST'])
+@voice.route("/zipcode/", methods=['POST'])
 @twilioify
 def zipcode():
     """ Handles POSTed zipcode and prompts for legislator selection.
@@ -186,7 +186,7 @@ def zipcode():
     return r
 
 
-@voice.route("/reps", methods=['POST'])
+@voice.route("/reps/", methods=['POST'])
 @twilioify
 def reps():
     r = twiml.Response()
@@ -197,7 +197,7 @@ def reps():
 
         if digits == '0':
 
-            r.redirect('')
+            r.redirect(url_for('index'))
             return r  # shortcut the process and start over
 
         else:
@@ -217,14 +217,14 @@ def reps():
     return r
 
 
-@voice.route("/rep", methods=['POST'])
+@voice.route("/rep/", methods=['POST'])
 @twilioify
 def rep():
     selection = request.form.get('Digits', None)
     return handle_selection(selection)
 
 
-@voice.route("/next/<next_selection>", methods=['POST'])
+@voice.route("/next/<next_selection>/", methods=['POST'])
 @twilioify
 def next(next_selection):
     selection = request.form.get('Digits', None)
@@ -232,11 +232,11 @@ def next(next_selection):
         return handle_selection(next_selection)
     else:
         r = twiml.Response()
-        r.redirect('/reps')
+        r.redirect(url_for('reps'))
         return r
 
 
-@voice.route("/signup", methods=['POST'])
+@voice.route("/signup/", methods=['POST'])
 @twilioify
 def signup():
 
@@ -253,26 +253,26 @@ def signup():
 
         r.play('http://assets.sunlightfoundation.com/projects/transparencyconnect/audio/9-1.wav')
 
-        r.redirect('/reps')
+        r.redirect(url_for('reps'))
 
     elif selection == '2':
 
         r.play('http://assets.sunlightfoundation.com/projects/transparencyconnect/audio/9-2.wav')
         r.record(action='/message', timeout=10, maxLength=120)
-        r.redirect('/reps')
+        r.redirect(url_for('reps'))
 
     elif selection == '3':
 
         r.play('http://assets.sunlightfoundation.com/projects/transparencyconnect/audio/9-3.wav')
-        r.redirect('/reps')
+        r.redirect(url_for('reps'))
 
     else:
-        r.redirect('/reps')
+        r.redirect(url_for('reps'))
 
     return r
 
 
-@voice.route("/message", methods=['POST'])
+@voice.route("/message/", methods=['POST'])
 @twilioify
 def message():
     g.db.messages.insert({
@@ -280,11 +280,11 @@ def message():
         'timestamp': g.now,
     })
     r = twiml.Response()
-    r.redirect('/reps')
+    r.redirect(url_for('reps'))
     return r
 
 
-@voice.route("/upcoming-bills", methods=['GET', 'POST'])
+@voice.route("/upcoming-bills/", methods=['GET', 'POST'])
 @twilioify
 def upcoming_bills():
     r = twiml.Response()
@@ -313,7 +313,7 @@ def upcoming_bills():
     return r
 
 
-@voice.route("/test", methods=['GET'])
+@voice.route("/test/", methods=['GET'])
 def test_method():
     r = data.recent_votes({'bioguide_id': 'V000128'})
     return str(r)
