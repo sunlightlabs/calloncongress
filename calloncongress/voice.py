@@ -96,7 +96,7 @@ def handle_selection(selection):
     return r
 
 
-@voice.route("", methods=['GET', 'POST'])
+@voice.route("/", methods=['GET', 'POST'])
 @twilioify
 def call_init():
 
@@ -285,7 +285,7 @@ def message():
 
 
 @voice.route("/upcoming-bills", methods=['GET', 'POST'])
-# @twilioify
+@twilioify
 def upcoming_bills():
     r = twiml.Response()
     bills = data.upcoming_bills()[:9]
