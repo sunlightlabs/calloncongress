@@ -310,6 +310,7 @@ def upcoming_bills():
                      {bill_title}. {bill_description}
                   '''.format(**bill_context))
 
+    r.redirect(url_for('.reps'))
     return r
 
 
