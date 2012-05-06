@@ -96,7 +96,7 @@ def handle_selection(selection):
     return r
 
 
-@voice.route("/", methods=['GET', 'POST'])
+@voice.route("", methods=['GET', 'POST'])
 @twilioify
 def call_init():
 
