@@ -1,6 +1,9 @@
+import datetime
+
 from flask import g
 from influenceexplorer import InfluenceExplorer
-from sunlightapi import sunlight
+from sunlightapi import sunlight as sun
+from realtimecongress import RTC as rtc
 import json
 import requests
 
@@ -11,8 +14,9 @@ TITLES = {
     'Sen': 'Senator',
 }
 
-sunlight.apikey = settings.SUNLIGHT_KEY
+sun.apikey = settings.SUNLIGHT_KEY
 ie = InfluenceExplorer(settings.SUNLIGHT_KEY)
+rtc.apikey = settings.SUNLIGHT_KEY
 
 
 def load_call(sid, params):
@@ -70,7 +74,7 @@ def legislators_for_zip(zipcode):
     if doc is None:
 
         # load from Sunlight Congress API if not cached locally
-        results = sunlight.legislators.allForZip(zipcode)
+        results = sun.legislators.allForZip(zipcode)
 
         # create a copy of the Legislator object dict
         legislators = [r.__dict__.copy() for r in results]
@@ -141,7 +145,7 @@ def committee_iter(committees):
 
 
 def committees(legislator):
-    comms = sunlight.committees.allForLegislator(g.legislator['bioguide_id'])
+    comms = sun.committees.allForLegislator(g.legislator['bioguide_id'])
     names = " ".join("%s." % c for c in committee_iter(comms))
     return names
 
@@ -174,3 +178,14 @@ def recent_votes(legislator):
         del vote['voter_ids']
 
     return data
+
+
+def upcoming_bills(window=None):
+    timeframe = [datetime.datetime.today(), datetime.datetime.today() + datetime.timedelta(days=settings.UPCOMING_BILL_DAYS)]
+    formatstr = '%Y-%m-%d'
+    bills = rtc.getUpcomingBills(legislative_day__gte=timeframe[0].strftime(formatstr),
+                                 legislative_day__lte=timeframe[1].strftime(formatstr),
+                                 order='legislative_day',
+                                 sort='asc')[:9]
+
+    return bills

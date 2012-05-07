@@ -5,8 +5,8 @@ LANGUAGES = (
     ('es', 'Spanish'),
     ('eo', 'Esperanto')
 )
-
 DEFAULT_LANGUAGE = 'en'
+UPCOMING_BILL_DAYS = 14
 
 # Import local settings or from os.environ
 try:
@@ -22,7 +22,16 @@ except ImportError:
                     ('.py', 'rb', imp.PY_SOURCE)
                 ).__dict__.keys():
                 if os.environ.get(key) is not None:
-                    setattr(sys.modules[__name__], key, os.environ.get(key))
+                    setting = os.environ.get(key)
+                    if setting.lower() == 'false':
+                        setting = False
+                    else:
+                        try:
+                            float(setting)
+                            setting = int(setting)
+                        except ValueError:
+                            pass
+                    setattr(sys.modules[__name__], key, setting)
     except Exception, e:
         raise ImportError('Got %s trying to initialize settings.' % e)
     finally:

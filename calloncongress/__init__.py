@@ -1,14 +1,18 @@
 import datetime
 import pymongo
 import urlparse
+import logging
+logger = logging.getLogger(__name__)
 
 from raven.contrib.flask import Sentry
+from raven.conf import setup_logging
+from raven.handlers.logging import SentryHandler
 from flask import Flask, g, request
 from calloncongress import settings
+
 from calloncongress.web import web
 from calloncongress.voice import voice
 # from calloncongress.sms import sms
-
 
 app = Flask(__name__)
 app.register_blueprint(web)
@@ -19,6 +23,8 @@ app.register_blueprint(voice, url_prefix='/voice')
 try:
     app.config['SENTRY_DSN'] = settings.SENTRY_DSN
     sentry = Sentry(app)
+    handler = SentryHandler(settings.SENTRY_DSN)
+    setup_logging(handler)
 except AttributeError:
     pass
 

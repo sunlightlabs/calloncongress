@@ -15,7 +15,7 @@ def twilioify(func):
     def decorated(*args, **kwargs):
 
         if 'CallSid' not in request.values:
-            return abort(404)
+            return abort(401, 'Request must be a signed Twilio request.')
 
         validator = RequestValidator(settings.TWILIO_AUTH_TOKEN)
         sig_header = request.headers.get('X-Twilio-Signature', '')
@@ -32,7 +32,7 @@ def twilioify(func):
             return abort(401)
 
         # load the call from Mongo or create if one does not exist
-        g.call = load_call(request.form['CallSid'], request.values)
+        g.call = load_call(request.values['CallSid'], request.values)
 
         g.zipcode = g.call['context'].get('zipcode', None)
         g.legislator = g.call['context'].get('legislator', None)
