@@ -56,7 +56,6 @@ def ensure_that(*args):
         def decorated(*args, **kwargs):
             for dep in dependencies:
                 valid = dep()
-                import pdb; pdb.set_trace()
                 if valid is not True:
                     return valid
 
