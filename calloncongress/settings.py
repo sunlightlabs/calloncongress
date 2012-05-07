@@ -3,10 +3,11 @@ DEBUG = True
 LANGUAGES = (
     ('en', 'English'),
     ('es', 'Spanish'),
-    ('eo', 'Esperanto')
+    ('eo', 'Esperanto'),
 )
 DEFAULT_LANGUAGE = 'en'
 UPCOMING_BILL_DAYS = 14
+INPUT_TIMEOUT = 10
 
 # Import local settings or from os.environ
 try:

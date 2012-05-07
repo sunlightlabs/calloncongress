@@ -44,6 +44,27 @@ def twilioify(func):
     return decorated
 
 
+def ensure_that(*args):
+    """
+    Decorator that makes sure required callbacks have been run and appropriate values provided.
+    """
+
+    dependencies = args
+
+    def decorator(func):
+        @wraps(func)
+        def decorated(*args, **kwargs):
+            for dep in dependencies:
+                valid = dep()
+                import pdb; pdb.set_trace()
+                if valid is not True:
+                    return valid
+
+            return func(*args, **kwargs)
+        return decorated
+    return decorator
+
+
 def load_call(sid, params):
     """ Loads a call from the datastore or creates a new one if one
         does not exist. Appends the current call status to the list
