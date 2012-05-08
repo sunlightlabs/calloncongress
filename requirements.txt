@@ -1,6 +1,6 @@
 Flask
 requests
-twilio
+twilio=3.3.6
 python-transparencydata
 python-sunlightapi
 sunlight
