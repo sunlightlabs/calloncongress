@@ -8,8 +8,9 @@ class Say(twilio.twiml.Say):
     def __init__(self, text, **kwargs):
         if 'language' not in kwargs.keys():
             lang = get_lang(default=settings.DEFAULT_LANGUAGE)
+            kwargs.update(language=lang)
         if 'voice' not in kwargs.keys():
-            kwargs.update(language=lang, voice=settings.DEFAULT_VOICE)
+            kwargs.update(voice=settings.DEFAULT_VOICE)
         super(Say, self).__init__(text, **kwargs)
         self.body = translate(text)
 
