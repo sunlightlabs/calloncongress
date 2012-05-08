@@ -4,6 +4,7 @@ import urlparse
 import logging
 logger = logging.getLogger(__name__)
 
+from calloncongress import twiml_monkeypatch
 from raven.contrib.flask import Sentry
 from raven.conf import setup_logging
 from raven.handlers.logging import SentryHandler
@@ -69,3 +70,43 @@ def teardown_request(exception):
     Disconnects from the MongoDB instance.
     """
     g.conn.disconnect()
+
+
+def load_call(sid, params):
+    """ Loads a call from the datastore or creates a new one if one
+        does not exist. Appends the current call status to the list
+        of requests involved in this call.
+
+        sid: the unique call ID from Twilio
+        params: the POSTed request parameters
+    """
+    # find existing call
+    doc = g.db.calls.find_one({'call_sid': sid})
+
+    if doc is None:
+        # create new call if call does not exist
+        doc = {
+            'call_sid': sid,
+            'from': params['From'],
+            'to': params['To'],
+            'caller_name': params.get('CallerName', None),
+            'context': {
+                'zipcode': None,
+                'legislator': None,
+            },
+            'language': '',
+        }
+        g.db.calls.insert(doc)
+
+    # create array for requests list
+    if 'requests' not in doc:
+        doc['requests'] = []
+
+    # append current request information and update current status
+    doc['requests'].append({
+        'timestamp': g.now,
+        'call_status': params['CallStatus']
+    })
+    doc['current_status'] = params['CallStatus']
+
+    return doc

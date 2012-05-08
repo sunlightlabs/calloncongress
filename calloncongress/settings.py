@@ -6,6 +6,7 @@ LANGUAGES = (
     ('eo', 'Esperanto'),
 )
 DEFAULT_LANGUAGE = 'en'
+DEFAULT_VOICE = 'female'
 UPCOMING_BILL_DAYS = 14
 INPUT_TIMEOUT = 10
 

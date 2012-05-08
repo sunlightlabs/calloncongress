@@ -1,5 +1,5 @@
 from flask import Blueprint
-from calloncongress.utils import twilioify
+from calloncongress.decorators import twilioify
 
 sms = Blueprint('sms', __name__)
 

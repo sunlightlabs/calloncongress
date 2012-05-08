@@ -1,11 +1,10 @@
-import re
-
 from flask import Blueprint, g, request, url_for
 from dateutil.parser import parse as dateparse
 from twilio import twiml
 
 from calloncongress import data, logger, settings
-from calloncongress.utils import twilioify, validate_before
+from calloncongress.helpers import read_context, write_context, get_lang, get_zip
+from calloncongress.decorators import twilioify, validate_before
 from calloncongress.voice.menu import MENU
 from calloncongress.voice.helpers import *
 
@@ -21,13 +20,16 @@ def index():
     """
 
     r = twiml.Response()
-    zipcode = g.call['context']['zipcode']
+    zipcode = get_zip()
     legislators = data.legislators_for_zip(zipcode)
     if legislators:
         if len(legislators) > 3:
-            r.play('http://assets.sunlightfoundation.com/projects/transparencyconnect/audio/selectlegalt.wav')
+            r.say("""Since your zip code covers more than one congressional district,
+                     you will be provided with a list of all possible legislators that
+                     may represent you. Please select from the following names:""")
         else:
-            r.play('http://assets.sunlightfoundation.com/projects/transparencyconnect/audio/selectleg.wav')
+            r.say("""We identified your representatives in Congress. Please select from
+                     the following names:""")
 
         with r.gather(numDigits=1, timeout=settings.INPUT_TIMEOUT, action=url_for('.reps')) as rg:
             options = [(l['fullname'], l['bioguide_id']) for l in legislators]
@@ -35,9 +37,9 @@ def index():
             script += " Press 0 to enter a new zipcode."
             rg.say(script)
     else:
-        r.say("I'm sorry, I wasn't able to locate any representatives for %s." % (" ".join(zipcode),))
+        r.say("I'm sorry, we weren't able to locate any representatives for %s." % (" ".join(zipcode),))
         with r.gather(numDigits=5, timeout=settings.INPUT_TIMEOUT, action=url_for('.zipcode')) as rg:
-            rg.say("Please try again or enter a new zipcode.")
+            rg.say("Please try again or enter a new zip code.")
 
     return r
 
@@ -46,29 +48,30 @@ def index():
 @twilioify
 def reps():
     r = twiml.Response()
-
     if 'Digits' in request.values:
-
         digits = request.values.get('Digits', None)
-
         if digits == '0':
-
             r.redirect(url_for('.index'))
             return r  # shortcut the process and start over
-
         else:
-
             selection = int(digits) - 1
             legislator = data.legislators_for_zip(g.zipcode)[selection]
-            g.call['context']['legislator'] = legislator
-
+            write_context('legislator', legislator)
     else:
         legislator = g.legislator
 
-    r.play('http://assets.sunlightfoundation.com/projects/transparencyconnect/audio/mainmenu-intro.wav')
+    r.say("""Please select one of the following options for information on:""")
     r.say('%s' % legislator['fullname'])
     with r.gather(numDigits=1, timeout=30, action=url_for('.rep')) as rg:
-        rg.play('http://assets.sunlightfoundation.com/projects/transparencyconnect/audio/mainmenu.wav')
+        rg.say("""For a list of top campaign donors, press 1.
+                  For recent votes, press 2.
+                  For a short biography, press 3.
+                  To list the representative's committees, press 4.
+                  To forward this call to the representative's Capitol Hill office, press 5.
+                  To find out how you can join the Sunlight Foundation's efforts to promote
+                    transparency in government, press 9.
+                  To go back to the list of representatives, press 0.
+               """)
 
     return r
 

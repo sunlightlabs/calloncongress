@@ -3,23 +3,36 @@ import re
 from twilio import twiml
 from flask import g, request, url_for
 from calloncongress import settings
+from calloncongress.helpers import digitless_url, read_context, write_context, get_lang, get_zip
 
 
 def language_selection():
-    if not g.call['context'].get('language'):
+    if not get_lang():
         errors = []
         r = twiml.Response()
 
+        # Handle twimlet-style params
+        if 'language' in request.values.keys():
+            sel = request.values['language']
+            try:
+                sel = int(sel)
+                write_context('language', settings.LANGUAGES[sel - 1][0])
+            except ValueError:
+                if sel in [lang[0] for lang in settings.LANGUAGES]:
+                    write_context('language', sel)
+
+        # Collect collect digits if named params are not set
         if 'Digits' in request.values:
             sel = int(request.values.get('Digits', 1))
             try:
-                g.call['context']['language'] = settings.LANGUAGES[sel - 1][0]
+                write_context('language', settings.LANGUAGES[sel - 1][0])
             except:
                 errors.append('%d is not a valid selection, please try again.')
 
-        if not g.call['context'].get('language'):
+        # Prompt and gather if language is not valid
+        if not get_lang():
             with r.gather(numDigits=1, timeout=settings.INPUT_TIMEOUT,
-                          action=url_for('.index'), method='POST') as rg:
+                          action=digitless_url(), method='POST') as rg:
                 if not len(errors):
                     rg.say('Welcome to Call on Congress.')
                 else:
@@ -33,20 +46,22 @@ def language_selection():
 
 
 def zipcode_selection():
-    if not g.call['context'].get('zipcode'):
+    if not get_zip():
         errors = []
         r = twiml.Response()
         if 'Digits' in request.values:
             sel = request.values.get('Digits')
             if len(sel) == 5:
-                g.call['context']['zipcode'] = int(sel)
+                write_context('zipcode', int(sel))
             else:
                 errors.append('%d is not a valid zipcode, please try again.')
 
-        if not g.call['context'].get('zipcode'):
+        if not get_zip():
             with r.gather(numDigits=5, timeout=settings.INPUT_TIMEOUT,
-                          action=url_for('.index'), method='POST') as rg:
-                rg.play("http://assets.sunlightfoundation.com/projects/transparencyconnect/audio/intro.wav")
+                          action=digitless_url(), method='POST') as rg:
+                rg.say("""To help us identify your representatives,
+                          please use the telephone keypad to enter
+                          your five-digit zip code now.""")
 
             return r
 
