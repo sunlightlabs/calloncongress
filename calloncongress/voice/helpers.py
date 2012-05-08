@@ -22,7 +22,7 @@ def language_selection():
                     write_context('language', sel)
 
         # Collect collect digits if named params are not set
-        if 'Digits' in request.values:
+        if 'Digits' in request.values.keys():
             sel = int(request.values.get('Digits', 1))
             try:
                 write_context('language', settings.LANGUAGES[sel - 1][0])
@@ -32,7 +32,7 @@ def language_selection():
         # Prompt and gather if language is not valid
         if not get_lang():
             with r.gather(numDigits=1, timeout=settings.INPUT_TIMEOUT,
-                          action=digitless_url(), method='POST') as rg:
+                          action=request.path, method='POST') as rg:
                 if not len(errors):
                     rg.say('Welcome to Call on Congress.')
                 else:
@@ -49,16 +49,18 @@ def zipcode_selection():
     if not get_zip():
         errors = []
         r = twiml.Response()
-        if 'Digits' in request.values:
+        if 'Digits' in request.values.keys():
             sel = request.values.get('Digits')
             if len(sel) == 5:
                 write_context('zipcode', int(sel))
             else:
-                errors.append('%d is not a valid zipcode, please try again.')
+                errors.append('%s is not a valid zipcode, please try again.' % sel)
 
         if not get_zip():
             with r.gather(numDigits=5, timeout=settings.INPUT_TIMEOUT,
-                          action=digitless_url(), method='POST') as rg:
+                          action=request.path, method='POST') as rg:
+                if len(errors):
+                    rg.say(' '.join(errors))
                 rg.say("""To help us identify your representatives,
                           please use the telephone keypad to enter
                           your five-digit zip code now.""")
