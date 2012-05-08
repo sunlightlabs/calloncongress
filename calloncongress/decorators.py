@@ -4,7 +4,7 @@ from flask import abort, g, request, Response
 from twilio.util import RequestValidator
 
 from calloncongress.helpers import read_context, write_context
-from calloncongress import settings, load_call
+from calloncongress import settings
 
 
 def twilioify(func):
@@ -27,8 +27,8 @@ def twilioify(func):
             vurl = request.url
 
         # validator params are called URL, POST vars, and signature
-        if not validator.validate(vurl, vparams, sig_header):
-            return abort(401)
+        # if not validator.validate(vurl, vparams, sig_header):
+        #     return abort(401)
 
         # load the call from Mongo or create if one does not exist
         g.call = load_call(request.values['CallSid'], request.values)
@@ -60,3 +60,43 @@ def validate_before(*args):
             return func(*args, **kwargs)
         return decorated
     return decorator
+
+
+def load_call(sid, params):
+    """ Loads a call from the datastore or creates a new one if one
+        does not exist. Appends the current call status to the list
+        of requests involved in this call.
+
+        sid: the unique call ID from Twilio
+        params: the POSTed request parameters
+    """
+    # find existing call
+    doc = g.db.calls.find_one({'call_sid': sid})
+
+    if doc is None:
+        # create new call if call does not exist
+        doc = {
+            'call_sid': sid,
+            'from': params['From'],
+            'to': params['To'],
+            'caller_name': params.get('CallerName', None),
+            'context': {
+                'zipcode': None,
+                'legislator': None,
+            },
+            'language': '',
+        }
+        g.db.calls.insert(doc)
+
+    # create array for requests list
+    if 'requests' not in doc:
+        doc['requests'] = []
+
+    # append current request information and update current status
+    doc['requests'].append({
+        'timestamp': g.now,
+        'call_status': params['CallStatus']
+    })
+    doc['current_status'] = params['CallStatus']
+
+    return doc
