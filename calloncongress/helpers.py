@@ -6,8 +6,8 @@ from flask import g, request
 def digitless_querystring():
     querydict = request.values.to_dict()
     try:
-        querydict = delattr(request.values.to_dict(), 'Digits')
-    except KeyError:
+        querydict = delattr(querydict, 'Digits')
+    except AttributeError:
         pass
 
     return urllib.urlencode(querydict)
