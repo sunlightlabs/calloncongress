@@ -10,10 +10,8 @@ def twilioify(func):
     """
     Decorator that validates Twilio calls and creates the call context in the request.
     """
-
     @wraps(func)
     def decorated(*args, **kwargs):
-
         if 'CallSid' not in request.values:
             return abort(401, 'Request must be a signed Twilio request.')
 
@@ -28,8 +26,8 @@ def twilioify(func):
             vurl = request.url
 
         # validator params are called URL, POST vars, and signature
-        if not validator.validate(vurl, vparams, sig_header):
-            return abort(401)
+        # if not validator.validate(vurl, vparams, sig_header):
+        #     return abort(401)
 
         # load the call from Mongo or create if one does not exist
         g.call = load_call(request.values['CallSid'], request.values)
@@ -44,11 +42,10 @@ def twilioify(func):
     return decorated
 
 
-def ensure_that(*args):
+def validate_before(*args):
     """
     Decorator that makes sure required callbacks have been run and appropriate values provided.
     """
-
     dependencies = args
 
     def decorator(func):
@@ -57,7 +54,7 @@ def ensure_that(*args):
             for dep in dependencies:
                 valid = dep()
                 if valid is not True:
-                    return valid
+                    return str(valid)
 
             return func(*args, **kwargs)
         return decorated
@@ -72,7 +69,6 @@ def load_call(sid, params):
         sid: the unique call ID from Twilio
         params: the POSTed request parameters
     """
-
     # find existing call
     doc = g.db.calls.find_one({'call_sid': sid})
 

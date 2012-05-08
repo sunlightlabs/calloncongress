@@ -5,7 +5,7 @@ from dateutil.parser import parse as dateparse
 from twilio import twiml
 
 from calloncongress import data, logger, settings
-from calloncongress.utils import twilioify, ensure_that
+from calloncongress.utils import twilioify, validate_before
 from calloncongress.voice.menu import MENU
 from calloncongress.voice.helpers import *
 
@@ -15,7 +15,7 @@ voice = Blueprint('voice', __name__)
 ### Voice Routes: Non Twimlet-compatible ###
 @voice.route("/", methods=['GET', 'POST'])
 @twilioify
-@ensure_that(language_is_selected, zipcode_is_selected)
+@validate_before(language_selection, zipcode_selection)
 def index():
     """ Handles an inbound call. This is the default route, which directs initial setup items.
     """

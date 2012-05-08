@@ -5,35 +5,50 @@ from flask import g, request, url_for
 from calloncongress import settings
 
 
-def language_is_selected():
+def language_selection():
     if not g.call['context'].get('language'):
+        errors = []
         r = twiml.Response()
+
         if 'Digits' in request.values:
             sel = int(request.values.get('Digits', 1))
-            g.call['context']['language'] = settings.LANGUAGES[sel - 1][0]
-        else:
+            try:
+                g.call['context']['language'] = settings.LANGUAGES[sel - 1][0]
+            except:
+                errors.append('%d is not a valid selection, please try again.')
+
+        if not g.call['context'].get('language'):
             with r.gather(numDigits=1, timeout=settings.INPUT_TIMEOUT,
                           action=url_for('.index'), method='POST') as rg:
-                rg.say('Welcome to Call on Congress. Press 1 to continue in English.', language='en')
+                if not len(errors):
+                    rg.say('Welcome to Call on Congress.')
+                else:
+                    rg.say(' '.join(errors))
+                rg.say('Press 1 to continue in English.', language='en')
                 rg.say('Presione 2 para continuar en espanol.', language='es')
 
-        return r
+            return r
 
     return True
 
 
-def zipcode_is_selected():
+def zipcode_selection():
     if not g.call['context'].get('zipcode'):
+        errors = []
         r = twiml.Response()
         if 'Digits' in request.values:
-            sel = int(request.values.get('Digits', 5))
-            g.call['context']['zipcode'] = settings.LANGUAGES[sel - 1][0]
-        else:
+            sel = request.values.get('Digits')
+            if len(sel) == 5:
+                g.call['context']['zipcode'] = int(sel)
+            else:
+                errors.append('%d is not a valid zipcode, please try again.')
+
+        if not g.call['context'].get('zipcode'):
             with r.gather(numDigits=5, timeout=settings.INPUT_TIMEOUT,
                           action=url_for('.index'), method='POST') as rg:
                 rg.play("http://assets.sunlightfoundation.com/projects/transparencyconnect/audio/intro.wav")
 
-        return r
+            return r
 
     return True
 
