@@ -1,12 +1,12 @@
 import hashlib
 
 from flask import g
-import pyglot
+from pyglot import Translator, GTranslatorError
 
 from calloncongress.helpers import get_lang
 from calloncongress import settings
 
-translator = pyglot.Translator(key=settings.GOOGLE_SERVICES_KEY)
+translator = Translator(key=settings.GOOGLE_SERVICES_KEY)
 
 
 def translate(s, **kwargs):
@@ -27,7 +27,7 @@ def translate(s, **kwargs):
             query.update(translation=trans.translatedText)
             s = query.get('translation')
             g.db.translations.save(query)
-        except pyglot.GTranslatorError, e:
+        except GTranslatorError:
             pass
     return s
 
