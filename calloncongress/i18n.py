@@ -22,11 +22,13 @@ def translate(s, **kwargs):
     if trans:
         return trans.translation
     else:
-        trans = translator.translate(s, target=query.get('lang'))
-        query.update(translation=trans.translatedText)
-        s = query.get('translation')
-        g.db.translations.save(query)
-
+        try:
+            trans = translator.translate(s, target=query.get('lang'))
+            query.update(translation=trans.translatedText)
+            s = query.get('translation')
+            g.db.translations.save(query)
+        except pyglot.GTranslatorError, e:
+            pass
     return s
 
 
