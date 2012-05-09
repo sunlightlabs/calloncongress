@@ -18,9 +18,9 @@ def translate(s, **kwargs):
     if query.get('lang') == 'en':
         return s
 
-    trans = g.db.translations.find_one(**query)
+    trans = g.db.translations.find_one(query)
     if trans:
-        return trans.translation
+        return trans['translation']
     else:
         try:
             trans = translator.translate(s, target=query.get('lang'))
