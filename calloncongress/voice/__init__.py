@@ -52,7 +52,7 @@ def member():
 
     r = twiml.Response()
     bioguide = g.request_params['bioguide_id']
-    legislator = read_context('legislator', load_legislator_by(bioguide))
+    legislator = read_context('legislator', load_member_for(bioguide))
     if 'Digits' in g.request_params.keys():
         return handle_selection(r, menu='member', selection=g.request_params['Digits'])
 
@@ -75,7 +75,7 @@ def member_bio():
 
     r = twiml.Response()
     bioguide = g.request_params['bioguide_id']
-    legislator = read_context('legislator', load_legislator_by(bioguide))
+    legislator = read_context('legislator', load_member_for(bioguide))
     r.say(legislator_bio(legislator))
 
     return next_action(r, default=url_for('.member', bioguide_id=bioguide))
@@ -89,7 +89,7 @@ def member_donors():
 
     r = twiml.Response()
     bioguide = g.request_params['bioguide_id']
-    legislator = read_context('legislator', load_legislator_by(bioguide))
+    legislator = read_context('legislator', load_member_for(bioguide))
     contribs = data.top_contributors(legislator)
     script = " ".join("%(name)s contributed $%(total_amount)s.\n" % c for c in contribs)
     r.say(script)
@@ -105,7 +105,7 @@ def member_votes():
 
     r = twiml.Response()
     bioguide = g.request_params['bioguide_id']
-    legislator = read_context('legislator', load_legislator_by(bioguide))
+    legislator = read_context('legislator', load_member_for(bioguide))
     votes = data.recent_votes(legislator)
     script = " ".join("On %(question)s. Voted %(voted)s. . The bill %(result)s.\t" % v for v in votes)
     r.say("%s. %s" % (legislator['fullname'], script))
@@ -121,7 +121,7 @@ def call_member():
 
     r = twiml.Response()
     bioguide = g.request_params['bioguide_id']
-    legislator = read_context('legislator', load_legislator_by(bioguide))
+    legislator = read_context('legislator', load_member_for(bioguide))
     r.say("Connecting you to %s at %s" % (legislator['fullname'], legislator['phone']))
     with r.dial() as rd:
         rd.number(legislator['phone'])
