@@ -192,7 +192,7 @@ def _format_bill(bill):
     bnumber = bill.get('number') or bill_number(bill['bill_id'])
     bdate = bill.get('legislative_day') or bill.get('last_action_at')
     try:
-        bdate = bdate.strftime('%B %e')
+        bdate = dateparse(bdate).strftime('%B %e')
     except:
         bdate = 'unknown date'
     title = (bill.get('popular_title') or
