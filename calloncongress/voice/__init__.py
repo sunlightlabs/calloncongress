@@ -269,134 +269,104 @@ def bill():
     return r
 
 
-@voice.route("/bill/subscribe", methods=['GET', 'POST'])
+@voice.route("/bill/subscribe/", methods=['GET', 'POST'])
 @twilioify
 @validate_before(language_selection, bill_selection)
 def subscribe_to_bill_updates():
     pass
 
 
-@voice.route("/signup/", methods=['GET', 'POST'])
+@voice.route("/about/", methods=['GET', 'POST'])
 @twilioify
-def signup():
-
+@validate_before(language_selection)
+def about():
     r = twiml.Response()
+    if 'Digits' in g.request_params.keys():
+        return handle_selection(r, menu='about', selection=g.request_params['Digits'])
 
-    selection = g.request_params.get('Digits', None)
+    with r.gather(numDigits=1, timeout=settings.INPUT_TIMEOUT) as rg:
+        rg.say("""Thank you for using Call on Congress.
+                  To learn more about the Sunlight Foundation, press 1.
+                  To sign up for SMS Updates from the Sunlight Foundation, press 2.
+                  To leave feedback about Call on Congress, press 3.""")
 
-    if selection == '1':
+    return r
 
+
+@voice.route("/about/sunlight/", methods=['GET', 'POST'])
+@twilioify
+@validate_before(language_selection)
+def about_sunlight():
+    r = twiml.Response()
+    r.say("""The Sunlight Foundation is a non-partisan, non-profit that
+             use cutting-edge technology and ideas to make government
+             transparent and accountable. We are committed to improving
+             access to government information by making it available online
+             to the public and by creating new tools to enable individuals
+             and communities to better access information and put it to use.
+
+             Learn more by visiting sunlight foundation dot com or by
+             calling 202-742-1520""")
+
+    return next_action(r, default=url_for('.about'))
+
+
+@voice.route("/about/signup/", methods=['GET', 'POST'])
+@twilioify
+@validate_before(language_selection)
+def signup():
+    r = twiml.Response()
+    number = None
+    if 'Digits' in g.request_params.keys():
+        digits = g.request_params['Digits']
+        if digits == '1':
+            number = g.call['from']
+        elif len(digits) == 10:
+            number = '+1' + digits
+        else:
+            r.say('That number is invalid.')
+
+    if number:
         g.db.smsSignups.insert({
             'url': g.call['from'],
             'timestamp': g.now,
         })
-
-        r.play('http://assets.sunlightfoundation.com/projects/transparencyconnect/audio/9-1.wav')
-
-        r.redirect(url_for('.reps'))
-
-    elif selection == '2':
-
-        r.play('http://assets.sunlightfoundation.com/projects/transparencyconnect/audio/9-2.wav')
-        r.record(action=url_for('.message'), timeout=10, maxLength=120)
-        r.redirect(url_for('.reps'))
-
-    elif selection == '3':
-
-        r.play('http://assets.sunlightfoundation.com/projects/transparencyconnect/audio/9-3.wav')
-        r.redirect(url_for('.reps'))
-
+        r.say('Thank you for signing up.')
+        if not 'next_url' in g.request_params.keys():
+            r.say('You will now be returned to the main menu.')
     else:
-        r.redirect(url_for('.reps'))
+        with r.gather(timeout=settings.INPUT_TIMEOUT) as rg:
+            rg.say("""To subscribe with the number you've called from, press 1, followed by #.
+                     To subscribe with a different number, enter the 10 digit number now, followed by #.
+                     To return to the previous menu, enter 0, followed by #.""")
 
-    return r
+        return r
+
+    return next_action(r, default=url_for('.index'))
 
 
-@voice.route("/message/", methods=['GET', 'POST'])
+@voice.route("/about/feedback/", methods=['GET', 'POST'])
 @twilioify
-def message():
-    g.db.messages.insert({
-        'url': g.request_params['RecordingUrl'],
-        'timestamp': g.now,
-    })
+@validate_before(language_selection)
+def feedback():
     r = twiml.Response()
-    r.redirect(url_for('.reps'))
-    return r
+    if 'RecordingUrl' in g.request_params.keys():
+        g.db.messages.insert({
+            'url': g.request_params['RecordingUrl'],
+            'timestamp': g.now,
+        })
+        if not 'next_url' in g.request_params.keys():
+            r.say("Thank you for your feedback. You will now be returned to the main menu.")
+    else:
+        r.say("""To leave feedback about Call on Congress or to contact the
+                 Sunlight Foundation, please leave a message at the tone.""")
+        r.record(timeout=10, maxLength=120)
+        return r
+
+    return next_action(r, default=url_for('.index'))
 
 
 @voice.route("/test/", methods=['GET', 'POST'])
 def test_method():
     r = data.recent_votes({'bioguide_id': 'V000128'})
     return str(r)
-
-
-# def handle_selection(selection):
-#     r = twiml.Response()
-
-#     if selection == '1':
-
-#         contribs = data.top_contributors(g.legislator)
-#         script = " ".join("%(name)s contributed $%(total_amount)s.\n" % c for c in contribs)
-
-#         r.play('http://assets.sunlightfoundation.com/projects/transparencyconnect/audio/1.wav')
-#         r.say(script)
-
-#         with r.gather(numDigits=1, timeout=10, action=url_for('.next', next_selection='2')) as rg:
-#             rg.play('http://assets.sunlightfoundation.com/projects/transparencyconnect/audio/1-out.wav')
-
-#     elif selection == '2':
-
-#         votes = data.recent_votes(g.legislator)
-
-#         script = " ".join("On %(question)s. Voted %(voted)s. . The bill %(result)s.\t" % v for v in votes)
-
-#         r.play('http://assets.sunlightfoundation.com/projects/transparencyconnect/audio/2.wav')
-#         r.say("%s. %s" % (g.legislator['fullname'], script))
-
-#         with r.gather(numDigits=1, timeout=10, action=url_for('.next', next_selection='3')) as rg:
-#             rg.play('http://assets.sunlightfoundation.com/projects/transparencyconnect/audio/2-out.wav')
-
-#     elif selection == '3':
-
-#         bio = data.legislator_bio(g.legislator)
-
-#         r.say(bio or ('Sorry, we were unable to locate a biography for %s' % g.legislator['fullname']))
-
-#         with r.gather(numDigits=1, timeout=10, action=url_for('.next', next_selection='4')) as rg:
-#             rg.play('http://assets.sunlightfoundation.com/projects/transparencyconnect/audio/3-out.wav')
-
-#     elif selection == '4':
-
-#         comms = data.committees(g.legislator)
-
-#         r.say(g.legislator['fullname'])
-#         r.play('http://assets.sunlightfoundation.com/projects/transparencyconnect/audio/4.wav')
-#         r.say(comms)
-
-#         with r.gather(numDigits=1, timeout=10, action=url_for('.next', next_selection='5')) as rg:
-#             rg.play('http://assets.sunlightfoundation.com/projects/transparencyconnect/audio/4-out.wav')
-
-#     elif selection == '5':
-
-#         # connect to the member's office
-
-#         r.play('http://assets.sunlightfoundation.com/projects/transparencyconnect/audio/5-pre.wav')
-#         r.say(g.legislator['fullname'])
-#         r.play('http://assets.sunlightfoundation.com/projects/transparencyconnect/audio/5-post.wav')
-
-#         with r.dial() as rd:
-#             rd.number(g.legislator['phone'])
-
-#     elif selection == '9':
-
-#         with r.gather(numDigits=1, timeout=10, action=url_for('.signup')) as rg:
-#             rg.play('http://assets.sunlightfoundation.com/projects/transparencyconnect/audio/9.wav')
-
-#     elif selection == '0':
-#         r.redirect(url_for('.zipcode'))
-
-#     else:
-#         r.say("I'm sorry, I don't recognize that selection. I will read you the options again.")
-#         r.redirect(url_for('.reps'))
-
-#     return r
