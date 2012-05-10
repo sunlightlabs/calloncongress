@@ -161,15 +161,15 @@ def upcoming_bills():
         r.say('The following bills are coming up in the next few days:')
         for bill in bills:
             try:
-                ctx = bill.context
+                ctx = bill['context']
             except AttributeError:
                 ctx = []
-            title = bill.popular_title or bill.short_title or bill.official_title
+            title = bill.get('popular_title') or bill.get('short_title') or bill.get('official_title')
             bill_context = {
-                'date': dateparse(bill.legislative_day).strftime('%B %e'),
-                'chamber': bill.chamber,
-                'bill_type': bill_type(bill.bill_id),
-                'bill_number': bill.number,
+                'date': dateparse(bill['legislative_day']).strftime('%B %e'),
+                'chamber': bill['chamber'],
+                'bill_type': bill_type(bill['bill_id']),
+                'bill_number': bill['number'],
                 'bill_title': title.encode('ascii', 'ignore'),
                 'bill_description': '\n'.join(ctx).encode('ascii', 'ignore')
             }
@@ -201,11 +201,11 @@ def bill_search():
                           action=url_for('.select_bill', **query)) as rg:
                 rg.say("Multiple bills were found. Please select from the following:")
                 for i, bill in enumerate(bills):
-                    title = bill.popular_title or bill.short_title or bill.official_title
+                    title = bill.get('popular_title') or bill.get('short_title') or bill.get('official_title')
                     bill_context = {
                         'button': i + 1,
-                        'bill_type': bill_type(bill.bill_id),
-                        'bill_number': bill.number,
+                        'bill_type': bill_type(bill['bill_id']),
+                        'bill_number': bill['number'],
                         'bill_title': title.encode('ascii', 'ignore')
                     }
                     rg.say("Press {button} for {bill_type} {bill_number}, {bill_title}".format(**bill_context))
@@ -234,7 +234,7 @@ def select_bill():
         try:
             sel = int(g.request_params['Digits'])
             bill = bills[sel - 1]
-            query.update(bill_id=bill.bill_id)
+            query.update(bill_id=bill['bill_id'])
             r.redirect(url_for('.bill', **query))
             return r
         except:
@@ -259,9 +259,9 @@ def bill():
 
     if 'Digits' in g.request_params.keys():
         return handle_selection(r, menu='bill', selection=g.request_params['Digits'],
-                                params={'bill_id': bill.bill_id})
+                                params={'bill_id': bill['bill_id']})
 
-    script = "Ask someone what to say about %s" % bill.bill_id
+    script = "Ask someone what to say about %s" % bill['bill_id']
     r.say(script)
     if 'next_url' in g.request_params.keys():
         r.redirect(g.request_params['next_url'])

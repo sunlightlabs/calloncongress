@@ -208,6 +208,10 @@ def load_members_for(zipcode):
 
 
 def load_member_for(bioguide):
+    for legislator in read_context('legislators', []):
+        if legislator['bioguide_id'] == bioguide:
+            write_context('legislator', legislator)
+            return legislator
     legislator = data.legislator_by_bioguide(bioguide)
     write_context('legislator', legislator)
     return legislator

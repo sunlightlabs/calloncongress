@@ -37,18 +37,11 @@ def legislators_for_zip(zipcode):
         results = sun.legislators.allForZip(zipcode)
 
         # create a copy of the Legislator object dict
-        legislators = [r.__dict__.copy() for r in results]
+        legislators = [_format_legislator(r) for r in results]
 
         # sort the legislators by reverse title so Senators are listed
         # before members of the House
-        legislators.sort(lambda x, y: -cmp(x['title'], y['title']))
-
-        # move current title to short_title and update title with
-        # a more readable version, create full name
-        for l in legislators:
-            l['short_title'] = l['title']
-            l['title'] = TITLES.get(l['title'], 'Representative')
-            l['fullname'] = "%s %s %s" % (l['title'], l['firstname'], l['lastname'])
+        legislators.sort(lambda x, y: -cmp(x['short_title'], y['short_title']))
 
         # save new zipcode results document
         g.db.legislatorsByZipcode.insert({
@@ -63,6 +56,34 @@ def legislators_for_zip(zipcode):
         legislators = doc['legislators']
 
     return legislators
+
+
+def legislator_by_bioguide(bioguide):
+    doc = g.db.legislatorByBioguideId.find_one({'bioguide_id': bioguide})
+
+    if doc is None:
+        try:
+            legislator = _format_legislator(sun.legislators.get(bioguide_id=bioguide))
+            g.db.legislatorByBioguideId.insert({
+                'timestamp': g.now,
+                'bioguide_id': bioguide,
+                'legislator': legislator,
+            })
+        except sun.SunlightApiError:
+            legislator = None
+    else:
+        legislator = doc['legislator']
+
+    return legislator
+
+
+def _format_legislator(l):
+    l = l.__dict__.copy()
+    l['short_title'] = l['title']
+    l['title'] = TITLES.get(l['title'], 'Representative')
+    l['fullname'] = "%s %s %s" % (l['title'], l['firstname'], l['lastname'])
+
+    return l
 
 
 def resolve_entity_id(crp_id):
@@ -148,15 +169,15 @@ def upcoming_bills(window=settings.UPCOMING_BILL_DAYS):
                                  order='legislative_day',
                                  sort='asc')
 
-    return bills
+    return [bill.__dict__.copy() for bill in bills]
 
 
 def bill_search(number=None):
-    return rtc.getBills(number=number)[:8]
+    [bill.__dict__.copy() for bill in rtc.getBills(number=number)][:8]
 
 
 def get_bill_by_id(bill_id=None):
     try:
-        return rtc.getBills(bill_id=bill_id)[0]
+        return rtc.getBills(bill_id=bill_id)[0].__dict__.copy()
     except IndexError:
         return None
