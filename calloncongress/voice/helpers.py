@@ -144,6 +144,15 @@ def bioguide_selection():
     return True
 
 
+def bill_selection():
+    if 'bill_id' in g.request_params.keys():
+        return True
+
+    r = twiml.Response()
+    r.redirect(url_for('.bill_search'))
+    return r
+
+
 def bill_type(abbr):
     abbr = re.split(r'([a-zA-Z.\-]*)', abbr)[1].lower().replace('.', '')
     return {
