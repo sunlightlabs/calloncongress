@@ -142,7 +142,8 @@ def bills():
     with r.gather(numDigits=1, timeout=settings.INPUT_TIMEOUT) as rg:
         rg.say("""To learn about legislation in congress, please select from the following:
                   For upcoming bills in the news, press 1.
-                  To search by bill number, press 2.""")
+                  To search by bill number, press 2.
+                  To return to the previous menu, press 9.""")
 
     return r
 

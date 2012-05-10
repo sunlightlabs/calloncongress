@@ -17,7 +17,7 @@ MENU = {
             {'key': 1, 'action': '.member_bio', 'params': ['bioguide_id']},
             {'key': 2, 'action': '.member_donors', 'params': ['bioguide_id']},
             {'key': 3, 'action': '.member_votes', 'params': ['bioguide_id']},
-            {'key': 4, 'action': '.member_call', 'params': ['bioguide_id']},
+            {'key': 4, 'action': '.call_member', 'params': ['bioguide_id']},
         ],
     },
     'bills': {
