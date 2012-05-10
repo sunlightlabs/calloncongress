@@ -188,6 +188,11 @@ def search_bills():
 
     r = twiml.Response()
     if 'Digits' in g.request_params.keys():
+        # Go back to previous menu if 0
+        if g.request_params['Digits'] == '0':
+            r.redirect(url_for('.bills'))
+            return r
+
         bills = data.bill_search(int(g.request_params['Digits']))
         if bills:
             query = {}
@@ -216,7 +221,10 @@ def search_bills():
             r.say('No bills were found matching that number.')
 
     with r.gather(timeout=settings.INPUT_TIMEOUT) as rg:
-        rg.say("Enter the number of the bill to search for, followed by the #. Exclude any prefixes such as H.R. or S.")
+        rg.say("""Enter the number of the bill to search for, followed by the #.
+                  Exclude any prefixes such as H.R. or S. 
+                  To return to the previous menu, press 0, followed by the #.
+               """)
 
     return r
 
@@ -267,7 +275,7 @@ def bill():
         r.redirect(g.request_params['next_url'])
         return r
 
-    with gather(numDigits=1, timeout=settings.INPUT_TIMEOUT) as rg:
+    with r.gather(numDigits=1, timeout=settings.INPUT_TIMEOUT) as rg:
         rg.say("""To get SMS updates about this bill on your mobile phone, press 1.
                   To search for another bill, press 2.
                   To return to the previous menu, press 9.
