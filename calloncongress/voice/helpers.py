@@ -123,6 +123,10 @@ def bioguide_selection():
     if 'bioguide_id' in g.request_params.keys():
         return True
 
+    # If Digits = 9 or 0, we're going back
+    if g.request_params.get('Digits') in ['9', '0']:
+        return True
+
     # Make sure there's a legislators list in the call context.
     # If not, short-circuit to zip collection and repost to get legislator list
     # before prompting for a selection.
