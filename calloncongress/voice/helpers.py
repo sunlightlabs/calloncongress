@@ -128,7 +128,7 @@ def bioguide_selection():
     # before prompting for a selection.
     legislators = read_context('legislators', [])
     if 'Digits' in g.request_params.keys() and len(legislators):
-        sel = g.request_params['Digits']
+        sel = int(g.request_params['Digits'])
         del g.request_params['Digits']
         try:
             legislator = read_context('legislators')[sel - 1]
