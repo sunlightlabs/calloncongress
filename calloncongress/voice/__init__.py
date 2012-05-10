@@ -57,7 +57,7 @@ def member():
         return handle_selection(r, menu='member', selection=g.request_params['Digits'], params={'bioguide_id': bioguide})
 
     r.say(MENU['member']['name'] % legislator['fullname'])
-    with r.gather(numDigits=1, timeout=settings.INPUT_TIMEOUT) as rg:
+    with r.gather(numDigits=1, timeout=settings.INPUT_TIMEOUT, action=url_for('.member', bioguide_id=bioguide)) as rg:
         rg.say("""Press 1 to hear a short biography.
                   Press 2 for a list of top campaign donors.
                   Press 3 for recent votes in congress.
