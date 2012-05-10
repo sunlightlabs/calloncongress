@@ -96,7 +96,7 @@ def bioguide_selection():
     # If not, short-circuit to zip collection and repost to get legislator list
     # before prompting for a selection.
     if 'Digits' in g.request_params.keys():
-        if not len(read_context('legislators')):
+        if not len(read_context('legislators', [])):
             del g.request_params['Digits']
             return bioguide_selection()
 
@@ -110,12 +110,12 @@ def bioguide_selection():
             errors.append('%d is not a valid selection, please try again.')
 
     if 'bioguide_id' not in g.request_params.keys():
-        if not len(read_context('legislators')):
+        if not len(read_context('legislators', [])):
             if not get_zip():
                 return zipcode_selection()
             load_members_for(get_zip())
 
-        legislators = read_context('legislators')
+        legislators = read_context('legislators', [])
         if len(legislators):
             if len(legislators) > 3:
                 r.say("""Since your zip code covers more than one congressional district,
