@@ -7,21 +7,30 @@ from calloncongress.helpers import digitless_url, read_context, write_context, f
 
 
 def language_selection():
+    """Ensures a language has been selected before proceeding with call flow, by:
+        - If a get param is sent, store it and return.
+        - If the context already has a language, return.
+        - If a language choice was passed back, pull it out of settings, store it and return.
+        - If nothing was sent, prompt the user with available choices.
+       This only needs to be set once during the life of a call.
+    """
+
+    # Twimlet-style params always override language settings
+    if 'language' in g.request_params.keys():
+        sel = g.request_params['language']
+        try:
+            sel = int(sel)
+            write_context('language', settings.LANGUAGES[sel - 1][0])
+        except ValueError:
+            if sel in [lang[0] for lang in settings.LANGUAGES]:
+                write_context('language', sel)
+
+    # Internal app use
     if not get_lang():
         errors = []
         r = twiml.Response()
 
-        # Handle twimlet-style params
-        if 'language' in g.request_params.keys():
-            sel = g.request_params['language']
-            try:
-                sel = int(sel)
-                write_context('language', settings.LANGUAGES[sel - 1][0])
-            except ValueError:
-                if sel in [lang[0] for lang in settings.LANGUAGES]:
-                    write_context('language', sel)
-
-        # Collect and wipe digits if named params are not set
+        # Collect and wipe digits if a choice was submitted
         if 'Digits' in g.request_params.keys():
             sel = int(g.request_params.get('Digits', 1))
             try:
@@ -31,7 +40,7 @@ def language_selection():
 
             del g.request_params['Digits']
 
-        # Prompt and gather if language is not valid
+        # Prompt and gather if language is not valid or no choice was submitted
         if not get_lang():
             with r.gather(numDigits=1, timeout=settings.INPUT_TIMEOUT, action=request.path) as rg:
                 if not len(errors):
@@ -50,10 +59,24 @@ def language_selection():
 
 
 def zipcode_selection():
+    """Ensures a zipcode has been selected before proceeding with call flow, by:
+        - If a get param is sent, store it and return.
+        - If the context already has a zipcode, return.
+        - If a language choice was passed back, pull it out of settings, store it and return.
+        - If nothing was sent, prompt the user with available choices.
+       This only needs to be set once during the life of a call.
+    """
+
+    # Twimlet use
+    if 'zipcode' in g.request_params.keys():
+        write_context('zipcode', int(sel))
+
+    # Internal app use
     if not get_zip():
         errors = []
         r = twiml.Response()
 
+        # Collect and wipe digits if a choice was submitted
         if 'Digits' in g.request_params.keys():
             sel = g.request_params.get('Digits')
             if len(sel) == 5:
@@ -63,6 +86,7 @@ def zipcode_selection():
 
             del g.request_params['Digits']
 
+        # Prompt and gather if zip is not valid or no choice was submitted
         if not get_zip():
             if request.path.startswith == '/member':
                 reason = 'To help us identify your representatives,'
@@ -85,7 +109,14 @@ def zipcode_selection():
 
 
 def bioguide_selection():
-    errors = []
+    """Ensures a Bioguide ID is present in request params before proceeding with call flow.
+       This is not stored in the context, only passed in params. Logic as follows:
+        - If a get param is sent, return.
+        - If a list of possible legislators is stored in context, and a choice was passed,
+            append the choice's Bioguide ID to params and return.
+        - If no list of legislators is present in context, prompt for zipcode and load legislators,
+            then prompt for a selection.
+    """
     r = twiml.Response()
 
     # Handle twimlet-style params
@@ -95,53 +126,56 @@ def bioguide_selection():
     # Make sure there's a legislators list in the call context.
     # If not, short-circuit to zip collection and repost to get legislator list
     # before prompting for a selection.
-    if 'Digits' in g.request_params.keys():
-        if not len(read_context('legislators', [])):
-            del g.request_params['Digits']
-            return bioguide_selection()
-
+    legislators = read_context('legislators', [])
+    if 'Digits' in g.request_params.keys() and len(legislators):
         sel = g.request_params['Digits']
         del g.request_params['Digits']
         try:
             legislator = read_context('legislators')[sel - 1]
             g.request_params['bioguide_id'] = legislator['bioguide_id']
+
             return True
         except:
-            errors.append('%d is not a valid selection, please try again.')
+            r.say('%d is not a valid selection, please try again.' % sel)
 
-    if 'bioguide_id' not in g.request_params.keys():
-        if not len(read_context('legislators', [])):
-            if not get_zip():
-                return zipcode_selection()
-            load_members_for(get_zip())
+    # If we don't have a bioguide, or legislators, or a zip selection,
+    # skip this and get a zip code first.
+    if not len(legislators) and not get_zip() and not 'Digits' in g.request_params.keys():
+        return zipcode_selection()
 
+    # If we do have a zip code selection, store it before trying to get legislators.
+    if not len(legislators) and not get_zip():
+        zipcode_selection()
+
+    # If we have a zip and no legislators, load them.
+    if not len(legislators):
+        load_members_for(get_zip())
         legislators = read_context('legislators', [])
-        if len(legislators):
-            if len(legislators) > 3:
-                r.say("""Since your zip code covers more than one congressional district,
-                         you will be provided with a list of all possible legislators that
-                         may represent you. Please select from the following names:""")
-            else:
-                r.say("""We identified your representatives in Congress. Please select from
-                         the following names:""")
 
-            with r.gather(numDigits=1, timeout=settings.INPUT_TIMEOUT) as rg:
-                options = [(l['fullname'], l['bioguide_id']) for l in legislators]
-                script = " ".join("Press %i for %s." % (index + 1, o[0]) for index, o in enumerate(options))
-                script += " Press 0 to enter a new zipcode."
-                rg.say(script)
+    # If there are legislators, prompt for a choice. If still nothing, fail and get a new zip.
+    if len(legislators):
+        if len(legislators) > 3:
+            r.say("""Since your zip code covers more than one congressional district,
+                     you will be provided with a list of all possible legislators that
+                     may represent you. Please select from the following names:""")
         else:
-            if not get_lang() and g.request_params.get('lanugae'):
-                write_context('language', g.request_params.get('language'))
+            r.say("""We identified your representatives in Congress. Please select from
+                     the following names:""")
 
-            r.say("I'm sorry, we weren't able to locate any representatives for %s." % get_zip())
-            flush_context('zipcode')
-            with r.gather(numDigits=5, timeout=settings.INPUT_TIMEOUT, action=url_for('.members', next_url=request.path)) as rg:
-                rg.say("Please enter a new zip code.")
+        with r.gather(numDigits=1, timeout=settings.INPUT_TIMEOUT) as rg:
+            options = [(l['fullname'], l['bioguide_id']) for l in legislators]
+            script = " ".join("Press %i for %s." % (index + 1, o[0]) for index, o in enumerate(options))
+            script += " Press 0 to enter a new zipcode."
+            rg.say(script)
+    else:
+        r.say("I'm sorry, we weren't able to locate any representatives for %s." % get_zip())
+        flush_context('zipcode')
+        try:
+            del g.request_params['Digits']
+        except:
+            pass
 
-        return r
-
-    return True
+    return r
 
 
 def bill_selection():
