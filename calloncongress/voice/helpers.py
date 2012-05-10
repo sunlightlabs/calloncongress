@@ -241,20 +241,21 @@ def handle_selection(response, **kwargs):
         sel = int(kwargs['selection'])
         menu = MENU[kwargs['menu']]
 
-        params = kwargs.get('params', {})
-        allowed_params = menu['choices'][sel].get('params', [])
-        for key, val in params.items():
-            if key not in allowed_params:
-                del params['key']
-
         if sel == 9:
             parent_menu = MENU[menu['parent']]
             response.redirect(url_for(parent_menu['route']))
             return response
 
-        choice = [choice['action'] for choice in menu['choices'] if choice['key'] == sel][0]
-        response.redirect(url_for(choice, **params))
+        choice = [choice for choice in menu['choices'] if choice['key'] == sel][0]
+        params = kwargs.get('params', {})
+        allowed_params = choice.get('params', [])
+        for key, val in params.items():
+            if key not in allowed_params:
+                del params['key']
+
+        response.redirect(url_for(choice['action'], **params))
         return response
+
     except Exception, e:
         response.say('Sorry, an error occurred: %s' % e)
         try:
