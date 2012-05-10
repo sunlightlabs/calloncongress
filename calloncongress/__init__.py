@@ -50,7 +50,7 @@ def before_request():
     except AttributeError:
         db_name = 'capitolphone'
 
-    g.request_params = request.values.copy()
+    g.request_params = request.values.to_dict()
     g.now = datetime.datetime.utcnow()
     g.db = getattr(g.conn, db_name)
 
