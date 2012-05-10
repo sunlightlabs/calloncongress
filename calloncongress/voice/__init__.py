@@ -193,9 +193,9 @@ def search_bills():
                           action=url_for('.select_bill', **query)) as rg:
                 rg.say("Multiple bills were found. Please select from the following:")
                 for i, bill in enumerate(bills):
-                    bill['bill_context']['button'] = i
+                    bill['bill_context']['button'] = i + 1
                     rg.say("Press {button} for {bill_type} {bill_number}, {bill_title}".format(**bill['bill_context']))
-
+                    rg.say("Press 0 to search for another number.")
             return r
 
         else:
@@ -203,7 +203,7 @@ def search_bills():
 
     with r.gather(timeout=settings.INPUT_TIMEOUT) as rg:
         rg.say("""Enter the number of the bill to search for, followed by the #.
-                  Exclude any prefixes such as H.R. or S. 
+                  Exclude any prefixes such as H.R. or S.
                   To return to the previous menu, press 0, followed by the #.
                """)
 
@@ -220,6 +220,9 @@ def select_bill():
     query = {}
     bills = read_context('bills')
     if 'Digits' in g.request_params.keys() and bills:
+        if g.request_params['Digits'] == '0':
+            flush_context('bills')
+            r.redirect(url_for('.search_bills'))
         try:
             sel = int(g.request_params['Digits'])
             bill = bills[sel - 1]

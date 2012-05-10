@@ -243,6 +243,7 @@ def handle_selection(response, **kwargs):
         return response
 
     except Exception, e:
+        print e
         response.say('Sorry, an error occurred: %s' % e)
         try:
             response.redirect(url_for(MENU[kwargs['menu']]['route']))
