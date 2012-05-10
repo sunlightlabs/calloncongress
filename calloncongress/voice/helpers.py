@@ -234,10 +234,15 @@ def load_member_for(bioguide):
 
 def handle_selection(response, **kwargs):
     from calloncongress.voice.menu import MENU
-    params = kwargs.get('params', {})
     try:
         sel = int(kwargs['selection'])
         menu = MENU[kwargs['menu']]
+
+        params = kwargs.get('params', {})
+        allowed_params = menu['choices'][sel].get('params', [])
+        for key, val in params.items:
+            if key not in allowed_params:
+                del params['key']
 
         if sel == 9:
             parent_menu = MENU[menu['parent']]

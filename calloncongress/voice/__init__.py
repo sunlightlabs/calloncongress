@@ -54,7 +54,7 @@ def member():
     bioguide = g.request_params['bioguide_id']
     legislator = read_context('legislator', load_member_for(bioguide))
     if 'Digits' in g.request_params.keys():
-        return handle_selection(r, menu='member', selection=g.request_params['Digits'])
+        return handle_selection(r, menu='member', selection=g.request_params['Digits'], params={'bioguide_id': bioguide})
 
     r.say(MENU['member']['name'] % legislator['fullname'])
     with r.gather(numDigits=1, timeout=settings.INPUT_TIMEOUT) as rg:

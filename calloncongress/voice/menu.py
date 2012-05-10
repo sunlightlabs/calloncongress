@@ -14,10 +14,10 @@ MENU = {
         'route': '.member',
         'parent': 'reps',
         'choices': [
-            {'key': 1, 'action': '.member_bio'},
-            {'key': 2, 'action': '.member_donors'},
-            {'key': 3, 'action': '.member_votes'},
-            {'key': 4, 'action': '.member_call'},
+            {'key': 1, 'action': '.member_bio', 'params': ['bioguide_id']},
+            {'key': 2, 'action': '.member_donors', 'params': ['bioguide_id']},
+            {'key': 3, 'action': '.member_votes', 'params': ['bioguide_id']},
+            {'key': 4, 'action': '.member_call', 'params': ['bioguide_id']},
         ],
     },
     'bills': {
