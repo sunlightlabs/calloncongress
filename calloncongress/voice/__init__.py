@@ -76,7 +76,7 @@ def member_bio():
     r = twiml.Response()
     bioguide = g.request_params['bioguide_id']
     legislator = read_context('legislator', load_member_for(bioguide))
-    r.say(legislator_bio(legislator))
+    r.say(data.legislator_bio(legislator))
 
     return next_action(r, default=url_for('.member', bioguide_id=bioguide))
 
