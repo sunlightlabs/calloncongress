@@ -227,5 +227,7 @@ def next_action(response, **kwargs):
         response.redirect(g.request_params.get('next_url'))
     elif 'default' in keys:
         response.redirect(g.request_params.get('default'))
+    else:
+        response.redirect(url_for('.index'))
 
-    response.redirect(url_for('.index'))
+    return response
