@@ -237,14 +237,14 @@ def handle_selection(response, **kwargs):
         allowed_params = choice.get('params', [])
         for key, val in params.items():
             if key not in allowed_params:
-                del params['key']
+                del params[key]
 
         response.redirect(url_for(choice['action'], **params))
         return response
 
     except Exception, e:
         print e
-        response.say('Sorry, an error occurred: %s' % e)
+        response.say('Sorry, an error occurred.')
         try:
             response.redirect(url_for(MENU[kwargs['menu']]['route']))
             return response

@@ -195,7 +195,7 @@ def search_bills():
                 for i, bill in enumerate(bills):
                     bill['bill_context']['button'] = i + 1
                     rg.say("Press {button} for {bill_type} {bill_number}, {bill_title}".format(**bill['bill_context']))
-                    rg.say("Press 0 to search for another number.")
+                rg.say("Press 0 to search for another number.")
             return r
 
         else:
