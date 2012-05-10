@@ -18,17 +18,12 @@ def twilioify(func):
 
         validator = RequestValidator(settings.TWILIO_AUTH_TOKEN)
         sig_header = request.headers.get('X-Twilio-Signature', '')
-
-        if request.method == 'POST':
-            vparams = request.form
-            vurl = request.base_url
-        else:
-            vparams = {}
-            vurl = request.url
+        vparams = request.values
+        vurl = request.base_url
 
         # validator params are called URL, POST vars, and signature
-        # if not validator.validate(vurl, vparams, sig_header):
-        #     return abort(401)
+        if not validator.validate(vurl, vparams, sig_header):
+            return abort(401)
 
         # load the call from Mongo or create if one does not exist
         g.call = load_call(request.values['CallSid'], request.values)
