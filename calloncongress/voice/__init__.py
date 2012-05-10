@@ -164,12 +164,13 @@ def upcoming_bills():
                 ctx = bill.context
             except AttributeError:
                 ctx = []
+            title = bill.popular_title or bill.short_title or bill.official_title
             bill_context = {
                 'date': dateparse(bill.legislative_day).strftime('%B %e'),
                 'chamber': bill.chamber,
                 'bill_type': bill_type(bill.bill_id),
-                'bill_number': bill.bill['number'],
-                'bill_title': bill.bill['official_title'].encode('ascii', 'ignore'),
+                'bill_number': bill.number,
+                'bill_title': title.encode('ascii', 'ignore'),
                 'bill_description': '\n'.join(ctx).encode('ascii', 'ignore')
             }
             r.say('''On {date}, the {chamber} will discuss {bill_type} {bill_number},
