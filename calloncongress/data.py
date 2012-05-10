@@ -188,13 +188,18 @@ def get_bill_by_id(bill_id=None):
 
 def _format_bill(bill):
     bill = bill.__dict__.copy()
-    title = bill.get('popular_title') or bill.get('short_title') or bill.get('official_title')
+    btype = bill_type(bill['bill_id'])
+    bnumber = bill.get('number') or bill_number(bill['bill_id'])
+    title = (bill.get('popular_title') or
+             bill.get('short_title') or
+             bill.get('official_title') or
+             '%s %s' % (btype, bnumber))
     ctx = bill.get('context', [])
     bill_context = {
         'date': dateparse(bill['legislative_day']).strftime('%B %e'),
         'chamber': bill['chamber'],
-        'bill_type': bill_type(bill['bill_id']),
-        'bill_number': bill.get('number') or bill_number(bill['bill_id']),
+        'bill_type': btype,
+        'bill_number': bnumber,
         'bill_title': title.encode('ascii', 'ignore'),
         'bill_description': '\n'.join(ctx).encode('ascii', 'ignore')
     }
