@@ -162,7 +162,7 @@ def upcoming_bills():
         for bill in bills:
             try:
                 ctx = bill['context']
-            except AttributeError:
+            except KeyError:
                 ctx = []
             title = bill.get('popular_title') or bill.get('short_title') or bill.get('official_title')
             bill_context = {
