@@ -213,10 +213,10 @@ def search_bills():
             return r
 
         else:
-            rg.say('No bills were found matching that number.')
+            r.say('No bills were found matching that number.')
 
     with r.gather(timeout=settings.INPUT_TIMEOUT) as rg:
-        rg.say("Enter the number of the bill to search for, followed by the # key. Exclude any prefixes such as H.R. or S.C. Res.")
+        rg.say("Enter the number of the bill to search for, followed by the #. Exclude any prefixes such as H.R. or S.C. Rezz.")
 
     return r
 
