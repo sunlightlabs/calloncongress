@@ -42,7 +42,7 @@ def language_selection():
 
         # Prompt and gather if language is not valid or no choice was submitted
         if not get_lang():
-            with r.gather(numDigits=1, timeout=settings.INPUT_TIMEOUT, action=request.path) as rg:
+            with r.gather(numDigits=1, timeout=settings.INPUT_TIMEOUT) as rg:
                 if not len(errors):
                     rg.say("""Welcome to Call on Congress, the Sunlight Foundation's
                               free service that helps you keep our lawmakers accountable
@@ -95,7 +95,7 @@ def zipcode_selection():
             else:
                 reason = None
 
-            with r.gather(numDigits=5, timeout=settings.INPUT_TIMEOUT, action=request.path) as rg:
+            with r.gather(numDigits=5, timeout=settings.INPUT_TIMEOUT) as rg:
                 if len(errors):
                     rg.say(' '.join(errors))
                 if reason:
@@ -154,15 +154,14 @@ def bioguide_selection():
 
     # If there are legislators, prompt for a choice. If still nothing, fail and get a new zip.
     if len(legislators):
-        if len(legislators) > 3:
-            r.say("""Since your zip code covers more than one congressional district,
-                     you will be provided with a list of all possible legislators that
-                     may represent you. Please select from the following names:""")
-        else:
-            r.say("""We identified your representatives in Congress. Please select from
-                     the following names:""")
-
         with r.gather(numDigits=1, timeout=settings.INPUT_TIMEOUT) as rg:
+            if len(legislators) > 3:
+                rg.say("""Since your zip code covers more than one congressional district,
+                          you will be provided with a list of all possible legislators that
+                          may represent you. Please select from the following names:""")
+            else:
+                rg.say("""We identified your representatives in Congress. Please select from
+                          the following names:""")
             options = [(l['fullname'], l['bioguide_id']) for l in legislators]
             script = " ".join("Press %i for %s." % (index + 1, o[0]) for index, o in enumerate(options))
             script += " Press 0 to enter a new zipcode."
