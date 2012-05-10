@@ -255,8 +255,8 @@ def handle_selection(response, **kwargs):
         choice = [choice['action'] for choice in menu['choices'] if choice['key'] == sel][0]
         response.redirect(url_for(choice, **params))
         return response
-    except:
-        response.say('Sorry, an error occurred.')
+    except Exception, e:
+        response.say('Sorry, an error occurred: %s' % e)
         try:
             response.redirect(url_for(MENU[kwargs['menu']]['route']))
             return response
