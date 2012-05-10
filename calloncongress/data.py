@@ -173,7 +173,9 @@ def upcoming_bills(window=settings.UPCOMING_BILL_DAYS):
 
 
 def bill_search(number=None):
-    [bill.__dict__.copy() for bill in rtc.getBills(number=number)][:8]
+    return [bill.__dict__.copy() for bill in rtc.getBills(number=number, 
+                                                          order='last_action_at',
+                                                          sort='desc')][:8]
 
 
 def get_bill_by_id(bill_id=None):
