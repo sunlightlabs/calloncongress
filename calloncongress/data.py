@@ -1,5 +1,7 @@
 import datetime
+import  re
 
+from dateutil.parser import parse as dateparse
 from flask import g
 from influenceexplorer import InfluenceExplorer
 from sunlightapi import sunlight as sun
@@ -169,17 +171,50 @@ def upcoming_bills(window=settings.UPCOMING_BILL_DAYS):
                                  order='legislative_day',
                                  sort='asc')
 
-    return [bill.__dict__.copy() for bill in bills]
+    return [_format_bill(bill) for bill in bills]
 
 
 def bill_search(number=None):
-    return [bill.__dict__.copy() for bill in rtc.getBills(number=number, 
-                                                          order='last_action_at',
-                                                          sort='desc')][:8]
+    bills = rtc.getBills(number=number, order='last_action_at', sort='desc')[:8]
+    return [_format_bill(bill) for bill in bills]
 
 
 def get_bill_by_id(bill_id=None):
     try:
-        return rtc.getBills(bill_id=bill_id)[0].__dict__.copy()
+        return _format_bill(rtc.getBills(bill_id=bill_id)[0])
     except IndexError:
         return None
+
+
+def _format_bill(bill):
+    bill = bill.__dict__.copy()
+    title = bill.get('popular_title') or bill.get('short_title') or bill.get('official_title')
+    ctx = bill.get('context', [])
+    bill_context = {
+        'date': dateparse(bill['legislative_day']).strftime('%B %e'),
+        'chamber': bill['chamber'],
+        'bill_type': bill_type(bill['bill_id']),
+        'bill_number': bill.get('number') or bill_number(bill['bill_id']),
+        'bill_title': title.encode('ascii', 'ignore'),
+        'bill_description': '\n'.join(ctx).encode('ascii', 'ignore')
+    }
+    bill.update(bill_context=bill_context)
+    return bill
+
+
+def bill_type(abbr):
+    abbr = re.split(r'([a-zA-Z.\-]*)', abbr)[1].lower().replace('.', '')
+    return {
+        'hr': 'House Bill',
+        'hres': 'House Resolution',
+        'hjres': 'House Joint Resolution',
+        'hcres': 'House Concurrent Resolution',
+        's': 'Senate Bill',
+        'sres': 'Senate Resolution',
+        'sjres': 'Senate Joint Resolution',
+        'scres': 'Senate Concurrent Resolution',
+    }.get(abbr)
+
+
+def bill_number(abbr):
+    return re.split(r'([a-zA-Z.\-]*)', abbr)[2]

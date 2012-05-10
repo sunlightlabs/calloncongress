@@ -190,20 +190,6 @@ def bill_selection():
     return r
 
 
-def bill_type(abbr):
-    abbr = re.split(r'([a-zA-Z.\-]*)', abbr)[1].lower().replace('.', '')
-    return {
-        'hr': 'House Bill',
-        'hres': 'House Resolution',
-        'hjres': 'House Joint Resolution',
-        'hcres': 'House Concurrent Resolution',
-        's': 'Senate Bill',
-        'sres': 'Senate Resolution',
-        'sjres': 'Senate Joint Resolution',
-        'scres': 'Senate Concurrent Resolution',
-    }.get(abbr)
-
-
 def load_members_for(zipcode):
     legislators = data.legislators_for_zip(zipcode)
     write_context('legislators', legislators)

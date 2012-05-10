@@ -160,22 +160,9 @@ def upcoming_bills():
     else:
         r.say('The following bills are coming up in the next few days:')
         for bill in bills:
-            try:
-                ctx = bill['context']
-            except KeyError:
-                ctx = []
-            title = bill.get('popular_title') or bill.get('short_title') or bill.get('official_title')
-            bill_context = {
-                'date': dateparse(bill['legislative_day']).strftime('%B %e'),
-                'chamber': bill['chamber'],
-                'bill_type': bill_type(bill['bill_id']),
-                'bill_number': bill['number'],
-                'bill_title': title.encode('ascii', 'ignore'),
-                'bill_description': '\n'.join(ctx).encode('ascii', 'ignore')
-            }
             r.say('''On {date}, the {chamber} will discuss {bill_type} {bill_number},
                      {bill_title}. {bill_description}
-                  '''.format(**bill_context))
+                  '''.format(**bill['bill_context']))
 
     return next_action(r, default=url_for('.bills'))
 
@@ -206,14 +193,8 @@ def search_bills():
                           action=url_for('.select_bill', **query)) as rg:
                 rg.say("Multiple bills were found. Please select from the following:")
                 for i, bill in enumerate(bills):
-                    title = bill.get('popular_title') or bill.get('short_title') or bill.get('official_title')
-                    bill_context = {
-                        'button': i + 1,
-                        'bill_type': bill_type(bill['bill_id']),
-                        'bill_number': bill['number'],
-                        'bill_title': title.encode('ascii', 'ignore')
-                    }
-                    rg.say("Press {button} for {bill_type} {bill_number}, {bill_title}".format(**bill_context))
+                    bill['bill_context']['button'] = i
+                    rg.say("Press {button} for {bill_type} {bill_number}, {bill_title}".format(**bill['bill_context']))
 
             return r
 
