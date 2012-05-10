@@ -192,11 +192,10 @@ def _format_bill(bill):
     bnumber = bill.get('number') or bill_number(bill['bill_id'])
     title = (bill.get('popular_title') or
              bill.get('short_title') or
-             bill.get('official_title') or
-             '%s %s' % (btype, bnumber))
+             bill.get('official_title') or '')
     ctx = bill.get('context', [])
     bill_context = {
-        'date': dateparse(bill['legislative_day']).strftime('%B %e'),
+        'date': dateparse(bill.get('legislative_day', bill['last_action_at'])).strftime('%B %e'),
         'chamber': bill['chamber'],
         'bill_type': btype,
         'bill_number': bnumber,
