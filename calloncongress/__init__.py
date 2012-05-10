@@ -50,6 +50,7 @@ def before_request():
     except AttributeError:
         db_name = 'capitolphone'
 
+    g.request_params = request.values.copy()
     g.now = datetime.datetime.utcnow()
     g.db = getattr(g.conn, db_name)
 
@@ -59,6 +60,7 @@ def after_request(response):
     """
     Saves the call object from the request context if one exists.
     """
+    delattr(g, 'request_params')
     if hasattr(g, 'call') and g.call is not None:
         g.db.calls.save(g.call)
     return response

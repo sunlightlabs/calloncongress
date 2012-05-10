@@ -140,12 +140,23 @@ def recent_votes(legislator):
     return data
 
 
-def upcoming_bills(window=None):
-    timeframe = [datetime.datetime.today(), datetime.datetime.today() + datetime.timedelta(days=settings.UPCOMING_BILL_DAYS)]
+def upcoming_bills(window=settings.UPCOMING_BILL_DAYS):
+    timeframe = [datetime.datetime.today(), datetime.datetime.today() + datetime.timedelta(days=window)]
     formatstr = '%Y-%m-%d'
     bills = rtc.getUpcomingBills(legislative_day__gte=timeframe[0].strftime(formatstr),
                                  legislative_day__lte=timeframe[1].strftime(formatstr),
                                  order='legislative_day',
-                                 sort='asc')[:9]
+                                 sort='asc')
 
     return bills
+
+
+def bill_search(number=None):
+    return rtc.getBills(number=number)[:8]
+
+
+def get_bill_by_id(bill_id=None):
+    try:
+        return rtc.getBills(bill_id=bill_id)[0]
+    except IndexError:
+        return None
