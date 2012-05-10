@@ -240,7 +240,7 @@ def handle_selection(response, **kwargs):
 
         params = kwargs.get('params', {})
         allowed_params = menu['choices'][sel].get('params', [])
-        for key, val in params.items:
+        for key, val in params.items():
             if key not in allowed_params:
                 del params['key']
 
