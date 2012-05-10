@@ -186,7 +186,7 @@ def bill_selection():
         return True
 
     r = twiml.Response()
-    r.redirect(url_for('.bill_search'))
+    r.redirect(url_for('.search_bills'))
     return r
 
 

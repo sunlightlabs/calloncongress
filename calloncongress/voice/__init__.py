@@ -183,7 +183,7 @@ def upcoming_bills():
 @voice.route("/bills/search/", methods=['GET', 'POST'])
 @twilioify
 @validate_before(language_selection)
-def bill_search():
+def search_bills():
     """Search route for bills"""
 
     r = twiml.Response()
@@ -240,7 +240,7 @@ def select_bill():
         except:
             r.say("No bill matched your selection.")
 
-    r.redirect(url_for('.bill_search', **query))
+    r.redirect(url_for('.search_bills', **query))
     return r
 
 
