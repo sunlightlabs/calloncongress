@@ -33,9 +33,9 @@ def language_selection():
 
         # Prompt and gather if language is not valid
         if not get_lang():
-            with r.gather(numDigits=1, timeout=settings.INPUT_TIMEOUT) as rg:
+            with r.gather(numDigits=1, timeout=settings.INPUT_TIMEOUT, action=request.path) as rg:
                 if not len(errors):
-                    rg.say("""Welcome to Call on Congress, the Sunlight Fuondation's
+                    rg.say("""Welcome to Call on Congress, the Sunlight Foundation's
                               free service that helps you keep our lawmakers accountable
                               with important information about our government.
                            """)
@@ -71,7 +71,7 @@ def zipcode_selection():
             else:
                 reason = None
 
-            with r.gather(numDigits=5, timeout=settings.INPUT_TIMEOUT) as rg:
+            with r.gather(numDigits=5, timeout=settings.INPUT_TIMEOUT, action=request.path) as rg:
                 if len(errors):
                     rg.say(' '.join(errors))
                 if reason:
