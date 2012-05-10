@@ -36,7 +36,7 @@ MENU = {
         'parent': 'bills',
         'choices': [
             {'key': 1, 'action': '.subscribe_to_bill_updates'},
-            {'key': 2, 'action': '.search_bills'}
+            {'key': 2, 'action': '.search_bills'},
             {'key': 0, 'action': '.index'}
         ],
     },
