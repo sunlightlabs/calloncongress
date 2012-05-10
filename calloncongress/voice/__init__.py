@@ -189,7 +189,7 @@ def search_bills():
     r = twiml.Response()
     if 'Digits' in g.request_params.keys():
         bills = data.bill_search(int(g.request_params['Digits']))
-        if len(bills):
+        if bills:
             query = {}
             if len(bills) == 1:
                 query.update(bill_id=bills[0].bill_id)
@@ -216,7 +216,7 @@ def search_bills():
             rg.say('No bills were found matching that number.')
 
     with r.gather(timeout=settings.INPUT_TIMEOUT) as rg:
-        rg.say("Enter the number of the bill to search for. Exclude any prefixes such as H.R. or S.Res.")
+        rg.say("Enter the number of the bill to search for, followed by the # key. Exclude any prefixes such as H.R. or S.C. Res.")
 
     return r
 
