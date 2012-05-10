@@ -222,11 +222,10 @@ def handle_selection(response, **kwargs):
 
 
 def next_action(response, **kwargs):
-    keys = g.request_params.keys()
-    if 'next_url' in keys:
-        response.redirect(g.request_params.get('next_url'))
-    elif 'default' in keys:
-        response.redirect(g.request_params.get('default'))
+    if 'next_url' in g.request_params.keys():
+        response.redirect(g.request_params['next_url'])
+    elif 'default' in kwargs:
+        response.redirect(g.request_params['default'])
     else:
         response.redirect(url_for('.index'))
 
