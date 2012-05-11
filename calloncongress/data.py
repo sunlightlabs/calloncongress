@@ -241,8 +241,10 @@ def election_offices_for_zip(zipcode):
             doc = {
                 'timestamp': g.now,
                 'zipcode': zipcode,
-                'offices': list(json.loads(requests.get(turbovote_url % (settings.TURBOVOTE_KEY, lat, lng)).content)['result'])
+                'offices': json.loads(requests.get(turbovote_url % (settings.TURBOVOTE_KEY, lat, lng)).content)['result']
             }
+            if isinstance(doc['offices'], dict):
+                doc['offices'] = [doc['offices']]
             g.db.electionOfficeByZipcode.insert(doc)
         except:
             return []
