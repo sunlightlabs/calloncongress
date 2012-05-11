@@ -330,6 +330,8 @@ def voting():
             rg.say("Press 1 to call your election office.")
         rg.say("Press 2 to repeat this information, or press 9 to return to the previous menu.")
 
+    return r
+
 
 @voice.route("/about/sunlight/", methods=['GET', 'POST'])
 @twilioify
