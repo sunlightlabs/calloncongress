@@ -37,25 +37,18 @@ MENU = {
         'choices': [
             {'key': 1, 'action': '.subscribe_to_bill_updates'},
             {'key': 2, 'action': '.search_bills'},
-            {'key': 0, 'action': '.index'}
+            {'key': 0, 'action': '.index'},
         ],
     },
-    # 'upcoming_bills': {
-    #     'name': 'Upcoming bills',
-    #     'route': '.upcoming_bills',
-    #     'parent': 'bills',
-    #     'choices': [
-    #         {'key': 1, 'action': '.call_reps'},
-    #     ]
-    # },
-    # 'voting': {
-    #     'name': 'Voting information',
-    #     'route': '.voting',
-    #     'parent': 'main',
-    #     'choices': [
-    #         {'key': 1, 'action': '.call_election_commission'},
-    #     ],
-    # },
+    'voting': {
+        'name': 'Voting information',
+        'route': '.voting',
+        'parent': 'main',
+        'choices': [
+            {'key': 1, 'action': '.call_election_commission'},
+            {'key': 2, 'action': '.voting'},
+        ],
+    },
     'about': {
         'name': 'About Call on Congress',
         'route': '.about',
@@ -63,7 +56,7 @@ MENU = {
         'choices': [
             {'key': 1, 'action': '.about_sunlight'},
             {'key': 2, 'action': '.signup'},
-            {'key': 3, 'action': '.feedback'}
+            {'key': 3, 'action': '.feedback'},
         ],
     },
 }

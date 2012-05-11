@@ -2,6 +2,7 @@ import datetime
 import  re
 
 from dateutil.parser import parse as dateparse
+from geopy import geocoders
 from flask import g
 from influenceexplorer import InfluenceExplorer
 from sunlightapi import sunlight as sun
@@ -227,3 +228,23 @@ def bill_type(abbr):
 
 def bill_number(abbr):
     return re.split(r'([a-zA-Z.\-]*)', abbr)[2]
+
+
+def election_offices_for_zip(zipcode):
+    doc = g.db.electionOfficesByZipcode.find_one({'zipcode': zipcode})
+
+    if doc is None:
+        try:
+            turbovote_url = "https://staging.turbovote.org/api/clerk?token=%s&lat=%s&lng=%s"
+            geo = geocoders.Google(settings.GOOGLE_SERVICES_KEY)
+            location, (lat, lng) = geo.geocode(zipcode, True)
+            doc = {
+                'timestamp': g.now,
+                'zipcode': zipcode,
+                'offices': list(json.loads(requests.get(turbovote_url % (settings.TURBOVOTE_KEY, lat, lng)).content)['result'])
+            }
+            g.db.electionOfficeByZipcode.insert(doc)
+        except:
+            return []
+
+    return doc

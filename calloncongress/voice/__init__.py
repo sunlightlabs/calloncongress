@@ -297,6 +297,40 @@ def about():
     return r
 
 
+@voice.route("/voting/", methods=['GET', 'POST'])
+@twilioify
+@validate_before(language_selection, zipcode_selection)
+def voting():
+    r = twiml.Response()
+    zipcode = get_zip()
+    offices = data.election_offices_for_zip(zipcode)
+
+    if not len(offices):
+        r.say("""Sorry, no offices were found for that zip code.""")
+        flush_context('zipcode')
+        r.redirect(url_for('.voting'))
+        return r
+
+    if 'Digits' in g.request_params.keys():
+        return handle_selection(r, menu='voting', selection=g.request_params['Digits'])
+
+    with r.gather(numDigits=1, timeout=settings.INPUT_TIMEOUT) as rg:
+        rg.say("""Voter information, including polling place locations
+                  and how to register to vote, is available from:""")
+        # TODO: Fix this when the new endpoint is ready
+        office = offices[0]
+        if office.get('authority_name'):
+            rg.say(office['authority_name'])
+        if office.get('street'):
+            rg.say("Street address: %s, %s %s" % (office['street'], office['city'], office['state']))
+        if office.get('mailing_street'):
+            rg.say("Mailing address: %s" % office['mailing_street'])
+        if office.get('phone'):
+            rg.say("Telephone number: %s" % office['phone'])
+            rg.say("Press 1 to call your election office.")
+        rg.say("Press 2 to repeat this information, or press 9 to return to the previous menu.")
+
+
 @voice.route("/about/sunlight/", methods=['GET', 'POST'])
 @twilioify
 @validate_before(language_selection)
