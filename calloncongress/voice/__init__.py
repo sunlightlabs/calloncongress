@@ -51,6 +51,10 @@ def member():
     """Menu for a specific member of congress"""
 
     r = twiml.Response()
+    if g.request_params.get('Digits') == '0':
+        r.redirect(url_for('.members'))
+        return r
+
     bioguide = g.request_params['bioguide_id']
     legislator = read_context('legislator', load_member_for(bioguide))
     if 'Digits' in g.request_params.keys():

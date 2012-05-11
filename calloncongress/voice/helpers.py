@@ -168,7 +168,7 @@ def bioguide_selection():
                           the following names:""")
             options = [(l['fullname'], l['bioguide_id']) for l in legislators]
             script = " ".join("Press %i for %s." % (index + 1, o[0]) for index, o in enumerate(options))
-            script += " Press 0 to enter a new zipcode."
+            script += " Press 0 to enter a new zip code."
             rg.say(script)
     else:
         r.say("I'm sorry, we weren't able to locate any representatives for %s." % get_zip())
