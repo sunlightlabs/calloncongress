@@ -245,7 +245,7 @@ def election_offices_for_zip(zipcode):
             }
             if isinstance(doc['offices'], dict):
                 doc['offices'] = [doc['offices']]
-            g.db.electionOfficeByZipcode.insert(doc)
+            g.db.electionOfficesByZipcode.insert(doc)
         except:
             return []
 
