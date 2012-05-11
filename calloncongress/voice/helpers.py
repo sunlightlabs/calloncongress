@@ -88,9 +88,9 @@ def zipcode_selection():
 
         # Prompt and gather if zip is not valid or no choice was submitted
         if not get_zip():
-            if request.path.startswith == '/member':
+            if request.path.startswith('/member'):
                 reason = 'To help us identify your representatives,'
-            elif request.path.startswith == '/voting':
+            elif request.path.startswith('/voting'):
                 reason = 'To help us find your election office,'
             else:
                 reason = None
