@@ -171,7 +171,7 @@ def bioguide_selection():
             script += " Press 0 to enter a new zip code."
             rg.say(script)
     else:
-        r.say("I'm sorry, we weren't able to locate any representatives for %s." % get_zip())
+        r.say("We're sorry, we weren't able to locate any representatives for %s." % get_zip())
         flush_context('zipcode')
         try:
             del g.request_params['Digits']
@@ -244,7 +244,7 @@ def handle_selection(response, **kwargs):
 
     except Exception, e:
         print e
-        response.say('Sorry, an error occurred.')
+        response.say('We\'re sorry, an error occurred.')
         try:
             response.redirect(url_for(MENU[kwargs['menu']]['route']))
             return response

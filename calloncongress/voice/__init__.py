@@ -306,7 +306,7 @@ def voting():
     offices = data.election_offices_for_zip(zipcode)
 
     if not len(offices):
-        r.say("""Sorry, no offices were found for that zip code.""")
+        r.say("""We're sorry, no offices were found for that zip code.""")
         flush_context('zipcode')
         r.redirect(url_for('.voting'))
         return r
@@ -328,10 +328,33 @@ def voting():
         if office.get('phone'):
             rg.say("Telephone number: %s" % office['phone'])
             rg.say("Press 1 to call your election office.")
-        rg.say("Press 2 to repeat this information, or press 9 to return to the previous menu.")
-
+        rg.say("""Press 2 to repeat this information.
+                  To return to the previous menu, press 9.""")
     return r
 
+
+@voice.route("/voting/call/", methods=['GET', 'POST'])
+@twilioify
+@validate_before(language_selection, zipcode_selection)
+def call_election_office():
+    r = twiml.Response()
+    zipcode = get_zip()
+    offices = data.election_offices_for_zip(zipcode)
+    if not len(offices):
+        r.redirect('.voting')
+        return r
+
+    office = offices[0]
+    if office.get('phone'):
+        r.say("Connecting you to your election office at %s" % office['phone'])
+        with r.dial() as rd:
+            rd.number(office['phone'])
+    else:
+        r.say("We're sorry, no phone number is available for this office.")
+        flush_context('zipcode')
+        return next_action(default=url_for('.voting'))
+
+    return r
 
 @voice.route("/about/sunlight/", methods=['GET', 'POST'])
 @twilioify
@@ -399,7 +422,7 @@ def feedback():
             r.say("Thank you for your feedback. You will now be returned to the main menu.")
     else:
         r.say("""To leave feedback about Call on Congress or to contact the
-                 Sunlight Foundation, please leave a message at the tone.""")
+                 Sunlight Foundation, please leave a message at the tone. Press the # when finished.""")
         r.record(timeout=10, maxLength=120)
         return r
 
