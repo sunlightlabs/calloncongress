@@ -10,4 +10,5 @@ raven>=1.7.3
 blinker
 python-dateutil<2
 pyglot
+geopy
 -e git+https://github.com/sunlightlabs/python-realtimecongress.git#egg=realtimecongress
