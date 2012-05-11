@@ -1,9 +1,7 @@
-import re
-
 from twilio import twiml
-from flask import g, request, redirect, url_for
+from flask import g, request, url_for
 from calloncongress import settings, data
-from calloncongress.helpers import digitless_url, read_context, write_context, flush_context, get_lang, get_zip
+from calloncongress.helpers import read_context, write_context, flush_context, get_lang, get_zip
 
 
 def language_selection():

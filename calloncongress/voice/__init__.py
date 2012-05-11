@@ -1,9 +1,8 @@
-from flask import Blueprint, g, request, redirect, url_for
-from dateutil.parser import parse as dateparse
+from flask import Blueprint, g, request, url_for
 from twilio import twiml
 
-from calloncongress import data, logger, settings
-from calloncongress.helpers import read_context, write_context, get_lang, get_zip, digitless_url
+from calloncongress import data, settings
+from calloncongress.helpers import read_context, write_context, get_zip
 from calloncongress.decorators import twilioify, validate_before
 from calloncongress.voice.menu import MENU
 from calloncongress.voice.helpers import *
