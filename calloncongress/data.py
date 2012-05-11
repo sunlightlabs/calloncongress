@@ -247,4 +247,4 @@ def election_offices_for_zip(zipcode):
         except:
             return []
 
-    return doc
+    return doc['offices']
