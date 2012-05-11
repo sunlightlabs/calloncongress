@@ -399,9 +399,9 @@ def signup():
             r.say('You will now be returned to the main menu.')
     else:
         with r.gather(timeout=settings.INPUT_TIMEOUT) as rg:
-            rg.say("""To subscribe with the number you've called from, press 1, followed by #.
-                     To subscribe with a different number, enter the 10 digit number now, followed by #.
-                     To return to the previous menu, enter 0, followed by #.""")
+            rg.say("""To subscribe with the number you've called from, press 1, followed by the #.
+                     To subscribe with a different number, enter the 10 digit number now, followed by the #.
+                     To return to the previous menu, enter 0, followed by the #.""")
 
         return r
 
