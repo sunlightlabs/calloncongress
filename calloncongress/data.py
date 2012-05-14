@@ -227,7 +227,7 @@ def _format_bill(bill):
         bill_context.update(cosponsors="Cosponsored by: %s" %
             ', '.join(["%s, %s, %s" % (_format_legislator(cs)['fullname'],
                                        party_for(cs['party']),
-                                       state_for(cs['party'])) for cs in cosponsors]))
+                                       state_for(cs['state'])) for cs in cosponsors]))
 
     bill.update(bill_context=bill_context)
     return bill
