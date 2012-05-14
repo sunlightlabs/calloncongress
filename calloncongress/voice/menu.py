@@ -48,6 +48,7 @@ MENU = {
         'choices': [
             {'key': 1, 'action': '.call_election_office'},
             {'key': 2, 'action': '.voting'},
+            {'key': 3, 'action': '.voting'}
         ],
     },
     'about': {

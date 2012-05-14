@@ -336,6 +336,10 @@ def voting():
         return r
 
     if 'Digits' in g.request_params.keys():
+        if g.request_params['Digits'] == '3':
+            flush_context('zipcode')
+            r.redirect(url_for('.voting'))
+            return r
         return handle_selection(r, menu='voting', selection=g.request_params['Digits'])
 
     with r.gather(numDigits=1, timeout=settings.INPUT_TIMEOUT) as rg:
@@ -348,11 +352,14 @@ def voting():
         if office.get('street'):
             rg.say("Street address: %s, %s %s" % (office['street'], office['city'], office['state']))
         if office.get('mailing_street'):
-            rg.say("Mailing address: %s" % office['mailing_street'])
+            rg.say("Mailing address: %s, %s %s, %s" % (office['mailing_street'],
+                                                       office['city'], office['state'],
+                                                       office['mailing_zip']))
         if office.get('phone'):
             rg.say("Telephone number: %s" % office['phone'])
             rg.say("Press 1 to call your election office.")
         rg.say("""Press 2 to repeat this information.
+                  Press 3 to enter a new zip code.
                   To return to the previous menu, press 9.""")
     return r
 
