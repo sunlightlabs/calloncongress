@@ -263,7 +263,7 @@ def bill():
     ctx = bill['bill_context']
 
     if len(bill['summary']) > 500 and not 'Digits' in g.request_params:
-        with r.gather(numDigits=1, timeout=settings.INPUT_TIMEOUT) as rg:
+        with r.gather(numDigits=1, timeout=2) as rg:
             rg.say('This bill has a long summary. Press 3 now to hear the long version, including the summary.')
 
     r.say("{bill_type} {bill_number}: {bill_title}".format(**ctx))
