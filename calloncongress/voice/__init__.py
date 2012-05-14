@@ -267,12 +267,16 @@ def bill():
             rg.say('This bill has a long summary. Press 3 now to hear the long version, including the summary.')
 
     r.say("{bill_type} {bill_number}: {bill_title}".format(**ctx))
-    if bill.get('summary') and g.request_params.get('Digits') == 3:
+    if bill.get('summary') and g.request_params.get('Digits') == '3':
         r.say(bill['summary'])
     if ctx.get('sponsor'):
         r.say(ctx['sponsor'])
-    if ctx.get('cosponsors'):
-        r.say(ctx['cosponsors'])
+    cosponsors = ctx.get('cosponsors')
+    if cosponsors:
+        if len(cosponsors) > 8:
+            r.say('This bill has %d cosponsors.' % len(cosponsors))
+        else:
+            r.say(ctx['cosponsors'])
     if ctx.get('bill_status'):
         r.say(ctx['bill_status'])
 
