@@ -221,6 +221,7 @@ def load_member_for(bioguide):
 
 def handle_selection(response, **kwargs):
     from calloncongress.voice.menu import MENU
+
     try:
         sel = int(kwargs['selection'])
         menu = MENU[kwargs['menu']]
