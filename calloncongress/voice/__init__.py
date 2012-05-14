@@ -353,7 +353,7 @@ def voting():
             rg.say("Street address: %s, %s %s" % (office['street'], office['city'], office['state']))
         if office.get('mailing_street'):
             rg.say("Mailing address: %s, %s %s, %s" % (office['mailing_street'],
-                                                       office['city'], office['state'],
+                                                       office['mailing_city'], office['state'],
                                                        office['mailing_zip']))
         if office.get('phone'):
             rg.say("Telephone number: %s" % office['phone'])
