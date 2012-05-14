@@ -204,7 +204,7 @@ def _format_bill(bill):
         'bill_title': title.encode('ascii', 'ignore'),
         'bill_description': '\n'.join(ctx).encode('ascii', 'ignore')
     }
-    if len(bill.get('actions'), []):
+    if len(bill.get('actions', [])):
         bill_context.update(bill_status="%s on %s" % (bill['last_action'].get('text'),
                                                       dateparse(bill['last_action'].get('acted_at').strftime('%B %e, %Y'))))
     else:
