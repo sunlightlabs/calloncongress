@@ -254,12 +254,20 @@ def bill():
         return r
 
     if 'Digits' in g.request_params.keys():
-        return handle_selection(r, menu='bill', selection=g.request_params['Digits'],
-                                params={'bill_id': bill['bill_id']})
+        if g.request_params['Digits'] == '3':
+            pass
+        else:
+            return handle_selection(r, menu='bill', selection=g.request_params['Digits'],
+                                    params={'bill_id': bill['bill_id']})
 
     ctx = bill['bill_context']
+
+    if len(bill['summary']) > 500 and not 'Digits' in g.request_params:
+        with r.gather(numDigits=1, timeout=settings.INPUT_TIMEOUT) as rg:
+            rg.say('This bill has a long summary. Press 3 now to hear the long version, including the summary.')
+
     r.say("{bill_type} {bill_number}: {bill_title}".format(**ctx))
-    if bill.get('summary'):
+    if bill.get('summary') and g.request_params.get('Digits') == 3:
         r.say(bill['summary'])
     if ctx.get('sponsor'):
         r.say(ctx['sponsor'])
