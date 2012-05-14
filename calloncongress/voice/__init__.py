@@ -1,3 +1,5 @@
+import re
+
 from flask import Blueprint, g, request, url_for
 from twilio import twiml
 
@@ -262,9 +264,11 @@ def bill():
 
     ctx = bill['bill_context']
 
-    if len(bill['summary']) > 500 and not 'Digits' in g.request_params:
+    if len(bill.get('summary', '')) > 800 and not 'Digits' in g.request_params:
         with r.gather(numDigits=1, timeout=2) as rg:
-            rg.say('This bill has a long summary. Press 3 now to hear the long version, including the summary.')
+            words = bill['summary'].split()
+            rg.say("This bill's summary is %d words. Press 3 now to hear the long version, including the summary." %
+                len(words))
 
     r.say("{bill_type} {bill_number}: {bill_title}".format(**ctx))
     if bill.get('summary') and g.request_params.get('Digits') == '3':
