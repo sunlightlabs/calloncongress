@@ -206,7 +206,7 @@ def _format_bill(bill):
     }
     if len(bill.get('actions', [])):
         bill_context.update(bill_status="%s on %s" % (bill['last_action'].get('text'),
-                                                      dateparse(bill['last_action'].get('acted_at').strftime('%B %e, %Y'))))
+                                                      dateparse(bill['last_action'].get('acted_at')).strftime('%B %e, %Y')))
     else:
         bill_context.update(bill_status='No known actions taken yet.')
 
