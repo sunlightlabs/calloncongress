@@ -77,7 +77,10 @@ def legislator_by_bioguide(bioguide):
 
 
 def _format_legislator(l):
-    l = l.__dict__.copy()
+    try:
+        l = l.__dict__.copy()
+    except AttributeError:
+        pass
     l['short_title'] = l['title']
     l['title'] = rep_title_for(l['title'])
     l['fullname'] = "%s %s %s" % (l['title'], l['firstname'], l['lastname'])
