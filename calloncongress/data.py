@@ -1,5 +1,4 @@
 import datetime
-import  re
 
 from dateutil.parser import parse as dateparse
 from geopy import geocoders
@@ -11,11 +10,8 @@ import json
 import requests
 
 from calloncongress import settings
-
-TITLES = {
-    'Rep': 'Representative',
-    'Sen': 'Senator',
-}
+from calloncongress.helpers import (bill_type_for, bill_number_for, state_for,
+                                    rep_title_for, party_for)
 
 sun.apikey = settings.SUNLIGHT_KEY
 ie = InfluenceExplorer(settings.SUNLIGHT_KEY)
@@ -83,7 +79,7 @@ def legislator_by_bioguide(bioguide):
 def _format_legislator(l):
     l = l.__dict__.copy()
     l['short_title'] = l['title']
-    l['title'] = TITLES.get(l['title'], 'Representative')
+    l['title'] = rep_title_for(l['title'])
     l['fullname'] = "%s %s %s" % (l['title'], l['firstname'], l['lastname'])
 
     return l
@@ -189,8 +185,8 @@ def get_bill_by_id(bill_id=None):
 
 def _format_bill(bill):
     bill = bill.__dict__.copy()
-    btype = bill_type(bill['bill_id'])
-    bnumber = bill.get('number') or bill_number(bill['bill_id'])
+    btype = bill_type_for(bill['bill_id'])
+    bnumber = bill.get('number') or bill_number_for(bill['bill_id'])
     bdate = bill.get('legislative_day') or bill.get('last_action_at')
     try:
         bdate = dateparse(bdate).strftime('%B %e')
@@ -208,26 +204,28 @@ def _format_bill(bill):
         'bill_title': title.encode('ascii', 'ignore'),
         'bill_description': '\n'.join(ctx).encode('ascii', 'ignore')
     }
+    if len(bill.get('actions'), []):
+        bill_context.update(bill_status="%s on %s" % (bill['last_action'].get('text'),
+                                                      dateparse(bill['last_action'].get('acted_at').strftime('%B %e, %Y'))))
+    else:
+        bill_context.update(bill_status='No known actions taken yet.')
+
+    with bill.get('sponsor') as sponsor:
+        if sponsor:
+            bill_context.update(sponsor="Sponsored by: %s, %s, %s" % (_format_legislator(sponsor)['fullname'],
+                                                                      party_for(sponsor['party']),
+                                                                      state_for(sponsor['state']),
+                                                                      ))
+
+    with bill.get('cosponsors', []) as cosponsors:
+        if len(cosponsors):
+            bill_context.update(cosponsors="Cosponsored by: %s" %
+                ', '.join(["%s, %s, %s" % (_format_legislator(cs)['fullname'],
+                                           party_for(cs['party']),
+                                           state_for(cs['party'])) for cs in cosponsors]))
+
     bill.update(bill_context=bill_context)
     return bill
-
-
-def bill_type(abbr):
-    abbr = re.split(r'([a-zA-Z.\-]*)', abbr)[1].lower().replace('.', '')
-    return {
-        'hr': 'House Bill',
-        'hres': 'House Resolution',
-        'hjres': 'House Joint Resolution',
-        'hcres': 'House Concurrent Resolution',
-        's': 'Senate Bill',
-        'sres': 'Senate Resolution',
-        'sjres': 'Senate Joint Resolution',
-        'scres': 'Senate Concurrent Resolution',
-    }.get(abbr)
-
-
-def bill_number(abbr):
-    return re.split(r'([a-zA-Z.\-]*)', abbr)[2]
 
 
 def election_offices_for_zip(zipcode):

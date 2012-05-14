@@ -257,8 +257,17 @@ def bill():
         return handle_selection(r, menu='bill', selection=g.request_params['Digits'],
                                 params={'bill_id': bill['bill_id']})
 
-    script = "Ask someone what to say about %s" % bill['bill_id']
-    r.say(script)
+    ctx = bill['bill_context']
+    r.say("{bill_type} {bill_number}: {bill_title}".format(**ctx))
+    if bill.get('summary'):
+        r.say(bill['summary'])
+    if ctx.get('sponsor'):
+        r.say(ctx['sponsor'])
+    if ctx.get('cosponsors'):
+        r.say(ctx['cosponsors'])
+    if ctx.get('bill_status'):
+        r.say(ctx['bill_status'])
+
     if 'next_url' in g.request_params.keys():
         r.redirect(g.request_params['next_url'])
         return r
