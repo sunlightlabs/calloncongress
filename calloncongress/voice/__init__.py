@@ -1,6 +1,4 @@
-import re
-
-from flask import Blueprint, g, request, url_for
+from flask import Blueprint, g, url_for
 from twilio import twiml
 
 from calloncongress import data, settings
