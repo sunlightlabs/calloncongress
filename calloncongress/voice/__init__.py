@@ -278,7 +278,7 @@ def bill():
     cosponsors = ctx.get('cosponsors')
     if cosponsors:
         if len(bill.get('cosponsor_ids', [])) > 8:
-            r.say('This bill has %d cosponsors.' % len(cosponsors))
+            r.say('This bill has %d cosponsors.' % len(bill.['cosponsor_ids']))
         else:
             r.say(ctx['cosponsors'])
     if ctx.get('bill_status'):
