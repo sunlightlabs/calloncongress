@@ -1,4 +1,6 @@
 import datetime
+import json
+import urllib
 
 from dateutil.parser import parse as dateparse
 from geopy import geocoders
@@ -6,7 +8,6 @@ from flask import g
 from influenceexplorer import InfluenceExplorer
 from sunlightapi import sunlight as sun
 from realtimecongress import RTC as rtc
-import json
 import requests
 
 from calloncongress import settings
@@ -259,7 +260,7 @@ def subscribe_to_bill_updates(**kwargs):
     headers = {
         'X-Twilio-Signature': request.headers.get('X-Twilio-Signature', ''),
         'X-Twilio-Request-URI': request.url,
-        'X-Twilio-Post-Body': request.form,
+        'X-Twilio-Post-Body': urllib.urlencode(request.form),
     }
     params = kwargs
     r = requests.post('http://scout.sunlightlabs.com/remote/subscribe/sms', data=json.dumps(params), headers=headers)
