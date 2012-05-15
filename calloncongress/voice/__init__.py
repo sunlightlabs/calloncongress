@@ -295,13 +295,6 @@ def bill():
     return r
 
 
-@voice.route("/bill/subscribe/", methods=['GET', 'POST'])
-@twilioify
-@validate_before(language_selection, bill_selection)
-def subscribe_to_bill_updates():
-    pass
-
-
 @voice.route("/about/", methods=['GET', 'POST'])
 @twilioify
 @validate_before(language_selection)
@@ -462,4 +455,20 @@ def feedback():
 @voice.route("/test/", methods=['GET', 'POST'])
 def test_method():
     r = data.recent_votes({'bioguide_id': 'V000128'})
+    return str(r)
+
+
+@voice.route("/scout-test/", methods=['GET', 'POST'])
+def test_scout():
+    r = twiml.Response()
+    params = {
+        'phone': g.request_params.get('phone', '6173140966'),
+        'interest_type': 'bill',
+        'item_id': g.request_params.get('item_id', 'hr4310-112'),
+    }
+    if data.subscribe_to_bill_updates(**params):
+        r.say('You have been subscribed. A confirmation message has been sent to %s.' % params['phone'])
+    else:
+        r.say('Sorry, there was an error subscribing you.')
+
     return str(r)

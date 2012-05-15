@@ -219,8 +219,7 @@ def _format_bill(bill):
     if sponsor:
         bill_context.update(sponsor="Sponsored by: %s, %s, %s" % (_format_legislator(sponsor)['fullname'],
                                                                   party_for(sponsor['party']),
-                                                                  state_for(sponsor['state']),
-                                                                  ))
+                                                                  state_for(sponsor['state'])))
 
     cosponsors = bill.get('cosponsors', [])
     if len(cosponsors):
@@ -253,3 +252,18 @@ def election_offices_for_zip(zipcode):
             return []
 
     return doc['offices']
+
+
+def subscribe_to_bill_updates(**kwargs):
+    from flask import request
+    headers = {
+        'X-Twilio-Signature': request.headers.get('X-Twilio-Signature', ''),
+        'X-Twilio-Requested-URI': request.url,
+        'X-Twilio-Post-Body': request.form,
+    }
+    params = kwargs
+    r = requests.post('http://scout.sunlightlabs.com/remote/subscribe/sms', data=json.dumps(params), headers=headers)
+    if r.status_code == 200:
+        return True
+    else:
+        return False
