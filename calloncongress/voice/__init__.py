@@ -158,15 +158,22 @@ def upcoming_bills():
     """Bills on the floor this week"""
 
     r = twiml.Response()
+
+    if 'Digits' in g.request_params.keys():
+        if g.request_params['Digits'] == '9':
+            r.redirect(url_for('.bills'))
+            return r
+
     bills = data.upcoming_bills()[:9]
     if not len(bills):
         r.say('There are no bills in the news this week.')
     else:
         r.say('The following bills are coming up in the next few days:')
-        for bill in bills:
-            r.say('''On {date}, the {chamber} will discuss {bill_type} {bill_number},
-                     {bill_title}. {bill_description}
-                  '''.format(**bill['bill_context']))
+        with r.gather(numDigits=1, timeout=1) as rg:
+            for bill in bills:
+                rg.say('''On {date}, the {chamber} will discuss {bill_type} {bill_number},
+                         {bill_title}. {bill_description}
+                      '''.format(**bill['bill_context']))
 
     return next_action(r, default=url_for('.bills'))
 
@@ -268,19 +275,20 @@ def bill():
             rg.say("This bill's summary is %d words. Press 3 now to hear the long version, including the summary." %
                 len(words))
 
-    r.say("{bill_type} {bill_number}: {bill_title}".format(**ctx))
-    if bill.get('summary') and g.request_params.get('Digits') == '3':
-        r.say(bill['summary'])
-    if ctx.get('sponsor'):
-        r.say(ctx['sponsor'])
-    cosponsors = ctx.get('cosponsors')
-    if cosponsors:
-        if len(bill.get('cosponsor_ids', [])) > 8:
-            r.say('This bill has %d cosponsors.' % len(bill['cosponsor_ids']))
-        else:
-            r.say(ctx['cosponsors'])
-    if ctx.get('bill_status'):
-        r.say(ctx['bill_status'])
+    with r.gather(numDigits=1, timeout=1) as rg:
+        rg.say("{bill_type} {bill_number}: {bill_title}".format(**ctx))
+        if bill.get('summary') and g.request_params.get('Digits') == '3':
+            rg.say(bill['summary'])
+        if ctx.get('sponsor'):
+            rg.say(ctx['sponsor'])
+        cosponsors = ctx.get('cosponsors')
+        if cosponsors:
+            if len(bill.get('cosponsor_ids', [])) > 8:
+                rg.say('This bill has %d cosponsors.' % len(bill['cosponsor_ids']))
+            else:
+                rg.say(ctx['cosponsors'])
+        if ctx.get('bill_status'):
+            rg.say(ctx['bill_status'])
 
     if 'next_url' in g.request_params.keys():
         r.redirect(g.request_params['next_url'])

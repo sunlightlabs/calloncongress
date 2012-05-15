@@ -43,8 +43,7 @@ def language_selection():
             with r.gather(numDigits=1, timeout=settings.INPUT_TIMEOUT) as rg:
                 if not len(errors):
                     rg.say("""Welcome to Call on Congress, the Sunlight Foundation's
-                              free service that helps you keep our lawmakers accountable
-                              with important information about our government.
+                              free service that helps you keep our lawmakers accountable.
                            """)
                 else:
                     rg.say(' '.join(errors))
