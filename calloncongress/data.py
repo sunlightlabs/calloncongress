@@ -168,7 +168,7 @@ def recent_votes(legislator):
             vote['question'] = vote['question'][3:]
         for i, key in enumerate(result_keys):
             try:
-                vote_result_index = vote['result'].index(key)
+                vote_result_index = vote['result'].lower().index(key)
                 vote['result'] = "%s %s" % (result_prefixes[i], vote['result'][vote_result_index:])
             except ValueError:
                 continue
