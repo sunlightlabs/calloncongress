@@ -314,8 +314,7 @@ def about():
     with r.gather(numDigits=1, timeout=settings.INPUT_TIMEOUT) as rg:
         rg.say("""Thank you for using Call on Congress.
                   To learn more about the Sunlight Foundation, press 1.
-                  To sign up for SMS Updates from the Sunlight Foundation, press 2.
-                  To leave feedback about Call on Congress, press 3.""")
+                  To leave feedback about Call on Congress, press 2.""")
 
     return r
 

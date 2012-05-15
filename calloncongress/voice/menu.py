@@ -57,8 +57,7 @@ MENU = {
         'parent': 'main',
         'choices': [
             {'key': 1, 'action': '.about_sunlight'},
-            {'key': 2, 'action': '.signup'},
-            {'key': 3, 'action': '.feedback'},
+            {'key': 2, 'action': '.feedback'},
         ],
     },
 }
