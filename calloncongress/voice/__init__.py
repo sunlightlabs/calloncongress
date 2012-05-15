@@ -110,8 +110,8 @@ def member_votes():
     bioguide = g.request_params['bioguide_id']
     legislator = read_context('legislator', load_member_for(bioguide))
     votes = data.recent_votes(legislator)
-    script = " ".join("On %(question)s. Voted %(voted)s. . The bill %(result)s.\t" % v for v in votes)
-    r.say("%s. %s" % (legislator['fullname'], script))
+    script = " ".join("On %(question)s. Voted %(voted)s. . The vote %(result)s.\t" % v for v in votes)
+    r.say("Recent votes for %s. %s" % (legislator['fullname'], script))
 
     return next_action(r, default=url_for('.member', bioguide_id=bioguide))
 

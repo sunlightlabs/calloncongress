@@ -157,11 +157,21 @@ def recent_votes(legislator):
 
     resp = requests.get(url, params=params, headers={'X-APIKEY': settings.SUNLIGHT_KEY})
 
+    result_keys = ['passed', 'rejected', 'failed']
+    result_prefixes = ['', 'was', '']
     data = json.loads(resp.content)['votes']
     for vote in data:
         voted = vote['voter_ids'][legislator['bioguide_id']]
         vote['voted'] = VOTES.get(voted, voted)
         vote['question'] = vote['question'].split(':')[-1].strip()
+        if vote['question'].lower().startswith('on '):
+            vote['question'] = vote['question'][3:]
+        for i, key in enumerate(result_keys):
+            try:
+                vote_result_index = vote['result'].index(key)
+                vote['result'] = "%s %s" % (result_prefixes[i], vote['result'][vote_result_index:])
+            except ValueError:
+                continue
         del vote['voter_ids']
 
     return data
