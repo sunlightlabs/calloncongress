@@ -59,6 +59,7 @@ def legislators_for_zip(zipcode):
 
 
 def legislator_by_bioguide(bioguide):
+    """ Finds and caches a legislator with the given bioguide id. """
     doc = g.db.legislatorByBioguideId.find_one({'bioguide_id': bioguide})
 
     if doc is None:
@@ -85,8 +86,8 @@ def _format_legislator(l):
     l['short_title'] = l['title']
     l['title'] = rep_title_for(l['title'])
     l['fullname'] = "%s %s %s" % (l['title'],
-                                  l.get('firstname', l['first_name']),
-                                  l.get('lastname', l['last_name']))
+                                  l.get('firstname') or l.get('first_name'),
+                                  l.get('lastname') or l.get('last_name'))
 
     return l
 
