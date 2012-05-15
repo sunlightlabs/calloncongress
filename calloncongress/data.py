@@ -258,7 +258,7 @@ def subscribe_to_bill_updates(**kwargs):
     from flask import request
     headers = {
         'X-Twilio-Signature': request.headers.get('X-Twilio-Signature', ''),
-        'X-Twilio-Requested-URI': request.url,
+        'X-Twilio-Request-URI': request.url,
         'X-Twilio-Post-Body': request.form,
     }
     params = kwargs
