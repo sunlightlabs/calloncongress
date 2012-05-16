@@ -23,7 +23,6 @@ class Say(twilio.twiml.Say):
         return super(Say, cls).__new__(cls, text, **kwargs)
 
     def __init__(self, text, **kwargs):
-        print kwargs
         if 'language' not in kwargs.keys():
             lang = get_lang(default=settings.DEFAULT_LANGUAGE)
             kwargs.update(language=lang)

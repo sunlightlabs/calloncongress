@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 import pymongo
 import urlparse
 from calloncongress import settings
@@ -18,6 +17,5 @@ except AttributeError:
     db_name = 'capitolphone'
 
 db = getattr(conn, db_name)
-
 if db:
     print 'Database connection opened and stored as db.'

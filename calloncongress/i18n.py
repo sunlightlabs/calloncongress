@@ -17,7 +17,6 @@ def translate(s, **kwargs):
         'lang': kwargs.get('language', get_lang(default=settings.DEFAULT_LANGUAGE)),
         'hash': hashlib.md5(s).hexdigest(),
     }
-    print query
     if query.get('lang') == 'en':
         return s
 
