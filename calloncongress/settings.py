@@ -1,3 +1,4 @@
+import os
 # Define any global settings here
 DEBUG = True
 LANGUAGES = (
@@ -9,13 +10,13 @@ DEFAULT_LANGUAGE = 'en'
 DEFAULT_VOICE = 'female'
 UPCOMING_BILL_DAYS = 14
 INPUT_TIMEOUT = 10
+PROJECT_ROOT = os.path.dirname(os.path.realpath(__file__))
 
 # Import local settings or from os.environ
 try:
     from calloncongress.local_settings import *
 except ImportError:
     import imp
-    import os
     import sys
     try:
         with open(os.path.join(os.path.dirname(__file__), 'local_settings.example.py'), 'rb') as fp:

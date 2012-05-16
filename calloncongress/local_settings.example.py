@@ -10,4 +10,4 @@ MONGOLAB_URI = ""
 MONGOHQ_URI = ""
 MONGO_URI = ""
 
-AUDIO_ROOT = "/audio"
+AUDIO_ROOT = "static/audio"

@@ -1,3 +1,5 @@
+import os
+
 import twilio.twiml
 from calloncongress.i18n import translate, translate_audio
 from calloncongress.helpers import get_lang
@@ -9,6 +11,12 @@ class Say(twilio.twiml.Say):
         if 'language' not in kwargs.keys():
             lang = get_lang(default=settings.DEFAULT_LANGUAGE)
             kwargs.update(language=lang)
+
+        filename = translate_audio(text, **kwargs)
+        if os.path.isfile(filename):
+            self = Play(filename, **kwargs)
+            return
+
         if 'voice' not in kwargs.keys():
             kwargs.update(voice=settings.DEFAULT_VOICE)
         super(Say, self).__init__(text, **kwargs)
