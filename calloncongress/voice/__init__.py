@@ -1,4 +1,5 @@
 from flask import Blueprint, g, url_for
+from calloncongress import twiml_monkeypatch
 from twilio import twiml
 
 from calloncongress import data, settings

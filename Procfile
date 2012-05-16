@@ -1,1 +1,1 @@
-web: python runserver.py
+web: gunicorn -w 3 -b 0.0.0.0:$PORT calloncongress:app
