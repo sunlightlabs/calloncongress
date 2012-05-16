@@ -4,12 +4,19 @@ from calloncongress.i18n import translate, translate_audio, audio_filename_for
 from calloncongress.helpers import get_lang
 from calloncongress import settings
 
+ACCENT_MAP = {
+    'eo': 'es',
+}
+
 
 class Say(twilio.twiml.Say):
     def __new__(cls, text, **kwargs):
         if 'language' not in kwargs.keys():
             lang = get_lang(default=settings.DEFAULT_LANGUAGE)
             kwargs.update(language=lang)
+
+        lang = kwargs['language']
+        kwargs['language'] = ACCENT_MAP.get(lang, lang)
 
         url = translate_audio(audio_filename_for(text))
         exists = False
