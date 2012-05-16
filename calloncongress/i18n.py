@@ -1,8 +1,9 @@
 import hashlib
 import os
 import re
+import urlparse
 
-from flask import g
+from flask import g, request
 from pyglot import Translator, GTranslatorError
 
 from calloncongress.helpers import get_lang, slugify
@@ -37,12 +38,10 @@ def translate(s, **kwargs):
 def translate_audio(text, **kwargs):
     if 'language' not in kwargs.keys():
         kwargs.update(language=get_lang(default=settings.DEFAULT_LANGUAGE))
-    if settings.AUDIO_ROOT.startswith('/'):
-        filename = os.path.join(settings.AUDIO_ROOT, kwargs.get('language'), audio_filename_for(text))
-    elif re.match(r'^https?://', settings.AUDIO_ROOT):
+    if re.match(r'^https?://', settings.AUDIO_ROOT):
         filename = "%s/%s/%s" % (settings.AUDIO_ROOT, kwargs.get('language'), audio_filename_for(text))
     else:
-        filename = os.path.join(settings.PROJECT_ROOT, settings.AUDIO_ROOT, kwargs.get('language'), audio_filename_for(text))
+        filename = urlparse.urljoin(request.base_url, settings.AUDIO_ROOT, kwargs.get('language'), audio_filename_for(text))
 
     print filename
     return filename

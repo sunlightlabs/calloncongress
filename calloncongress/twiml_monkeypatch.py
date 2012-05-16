@@ -7,15 +7,21 @@ from calloncongress import settings
 
 
 class Say(twilio.twiml.Say):
-    def __init__(self, text, **kwargs):
+    def __new__(cls, text, **kwargs):
         if 'language' not in kwargs.keys():
             lang = get_lang(default=settings.DEFAULT_LANGUAGE)
             kwargs.update(language=lang)
 
         filename = translate_audio(text, **kwargs)
         if os.path.isfile(filename):
-            self = Play(filename, **kwargs)
-            return
+            return Play(filename, **kwargs)
+        else:
+            return super(Say, cls).__new__(cls, text, **kwargs)
+
+    def __init__(self, text, **kwargs):
+        if 'language' not in kwargs.keys():
+            lang = get_lang(default=settings.DEFAULT_LANGUAGE)
+            kwargs.update(language=lang)
 
         if 'voice' not in kwargs.keys():
             kwargs.update(voice=settings.DEFAULT_VOICE)
