@@ -38,11 +38,14 @@ def translate_audio(text, **kwargs):
     if 'language' not in kwargs.keys():
         kwargs.update(language=get_lang(default=settings.DEFAULT_LANGUAGE))
     if settings.AUDIO_ROOT.startswith('/'):
-        return os.path.join(settings.AUDIO_ROOT, kwargs.get('language'), audio_filename_for(text))
+        filename = os.path.join(settings.AUDIO_ROOT, kwargs.get('language'), audio_filename_for(text))
     elif re.match(r'^https?://', settings.AUDIO_ROOT):
-        return "%s/%s/%s" % (settings.AUDIO_ROOT, kwargs.get('language'), audio_filename_for(text))
+        filename = "%s/%s/%s" % (settings.AUDIO_ROOT, kwargs.get('language'), audio_filename_for(text))
     else:
-        return os.path.join(settings.PROJECT_ROOT, settings.AUDIO_ROOT, kwargs.get('language'), audio_filename_for(text))
+        filename = os.path.join(settings.PROJECT_ROOT, settings.AUDIO_ROOT, kwargs.get('language'), audio_filename_for(text))
+
+    print filename
+    return filename
 
 
 def audio_filename_for(text, **kwargs):
