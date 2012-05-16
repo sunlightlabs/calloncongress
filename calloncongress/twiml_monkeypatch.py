@@ -12,7 +12,12 @@ class Say(twilio.twiml.Say):
             kwargs.update(language=lang)
 
         url = translate_audio(audio_filename_for(text))
-        if requests.head(url, timeout=1).status_code == 200:
+        exists = False
+        try:
+            exists = (requests.head(url, timeout=1.5).status_code == 200)
+        except:
+            pass
+        if exists:
             play = Play(audio_filename_for(text), **kwargs)
             return play
         return super(Say, cls).__new__(cls, text, **kwargs)
