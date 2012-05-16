@@ -15,7 +15,7 @@ class Say(twilio.twiml.Say):
         if requests.head(url, timeout=1).status_code == 200:
             play = Play(audio_filename_for(text), **kwargs)
             return play
-        return super(Say, cls).__new__(cls)
+        return super(Say, cls).__new__(cls, text, **kwargs)
 
     def __init__(self, text, **kwargs):
         if 'language' not in kwargs.keys():
