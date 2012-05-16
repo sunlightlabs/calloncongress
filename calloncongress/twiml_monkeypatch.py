@@ -26,13 +26,13 @@ class Say(twilio.twiml.Say):
         if 'voice' not in kwargs.keys():
             kwargs.update(voice=settings.DEFAULT_VOICE)
         super(Say, self).__init__(text, **kwargs)
-        self.body = translate(text)
+        self.body = translate(text, **kwargs)
 
 
 class Play(twilio.twiml.Play):
     def __init__(self, url, **kwargs):
         super(Play, self).__init__(url, **kwargs)
-        self.body = translate_audio(url)
+        self.body = translate_audio(url, **kwargs)
 
 twilio.twiml.Say = Say
 twilio.twiml.Play = Play
