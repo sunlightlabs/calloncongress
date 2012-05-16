@@ -1,8 +1,6 @@
-import os
-
 import twilio.twiml
 import requests
-from calloncongress.i18n import translate, translate_audio
+from calloncongress.i18n import translate, translate_audio, audio_filename_for
 from calloncongress.helpers import get_lang
 from calloncongress import settings
 
@@ -13,14 +11,11 @@ class Say(twilio.twiml.Say):
             lang = get_lang(default=settings.DEFAULT_LANGUAGE)
             kwargs.update(language=lang)
 
-        filename = translate_audio(text, **kwargs)
-        if filename.startswith('/'):
-            if os.path.isfile(filename):
-                return Play(filename, **kwargs)
-        else:  # url
-            if requests.head(filename).status_code == 200:
-                return Play(filename, **kwargs)
-        return super(Say, cls).__new__(cls, text, **kwargs)
+        url = translate_audio(audio_filename_for(text))
+        if requests.head(url, timeout=1).status_code == 200:
+            play = Play(audio_filename_for(text), **kwargs)
+            return play
+        return super(Say, cls).__new__(cls)
 
     def __init__(self, text, **kwargs):
         if 'language' not in kwargs.keys():

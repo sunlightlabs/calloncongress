@@ -35,17 +35,11 @@ def translate(s, **kwargs):
     return s
 
 
-def translate_audio(text, **kwargs):
-    if 'language' not in kwargs.keys():
-        kwargs.update(language=get_lang(default=settings.DEFAULT_LANGUAGE))
+def audio_root_as_url():
     if re.match(r'^https?://', settings.AUDIO_ROOT):
-        filename = "%s/%s/%s" % (settings.AUDIO_ROOT, kwargs.get('language'), audio_filename_for(text))
+        return settings.AUDIO_ROOT
     else:
-        filename = urlparse.urljoin(request.base_url,
-                                    '/'.join([settings.AUDIO_ROOT, kwargs.get('language'), audio_filename_for(text)]))
-
-    print filename
-    return filename
+        return urlparse.urljoin(request.base_url, settings.AUDIO_ROOT)
 
 
 def audio_filename_for(text, **kwargs):
@@ -53,3 +47,9 @@ def audio_filename_for(text, **kwargs):
     slug = slugify(text[:20])
     hsh = hashlib.md5(text).hexdigest()
     return "%s-%s.%s" % (hsh, slug, ext)
+
+
+def translate_audio(filename, **kwargs):
+    if 'language' not in kwargs.keys():
+        kwargs.update(language=get_lang(default=settings.DEFAULT_LANGUAGE))
+    return "%s/%s/%s" % (audio_root_as_url(), kwargs.get('language'), filename)
