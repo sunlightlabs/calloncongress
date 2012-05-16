@@ -41,7 +41,8 @@ def translate_audio(text, **kwargs):
     if re.match(r'^https?://', settings.AUDIO_ROOT):
         filename = "%s/%s/%s" % (settings.AUDIO_ROOT, kwargs.get('language'), audio_filename_for(text))
     else:
-        filename = urlparse.urljoin(request.base_url, settings.AUDIO_ROOT, kwargs.get('language'), audio_filename_for(text))
+        filename = urlparse.urljoin(request.base_url,
+                                    '/'.join([settings.AUDIO_ROOT, kwargs.get('language'), audio_filename_for(text)]))
 
     print filename
     return filename
