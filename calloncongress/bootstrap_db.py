@@ -1,3 +1,5 @@
+"""This is a convenience file for connecting to the db via heroku"""
+
 import pymongo
 import urlparse
 from calloncongress import settings
