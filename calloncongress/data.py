@@ -248,13 +248,11 @@ def election_offices_for_zip(zipcode):
 
     if doc is None:
         try:
-            turbovote_url = "https://staging.turbovote.org/api/clerk?token=%s&lat=%s&lng=%s"
-            geo = geocoders.Google(settings.GOOGLE_SERVICES_KEY)
-            location, (lat, lng) = geo.geocode(zipcode, True)
+            turbovote_url = "https://staging.turbovote.org/api/clerk/%s?token=%s"
             doc = {
                 'timestamp': g.now,
                 'zipcode': zipcode,
-                'offices': json.loads(requests.get(turbovote_url % (settings.TURBOVOTE_KEY, lat, lng)).content)['result']
+                'offices': json.loads(requests.get(turbovote_url % (zipcode, settings.TURBOVOTE_KEY)).content)['result']
             }
             if isinstance(doc['offices'], dict):
                 doc['offices'] = [doc['offices']]
