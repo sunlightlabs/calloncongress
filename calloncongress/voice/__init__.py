@@ -341,20 +341,23 @@ def voting():
         return handle_selection(r, menu='voting', selection=g.request_params['Digits'])
 
     with r.gather(numDigits=1, timeout=settings.INPUT_TIMEOUT) as rg:
+        if len(offices) > 1:
+            rg.say("Multiple offices were found in your zip code.")
         rg.say("""Voter information, including polling place locations
                   and how to register to vote, is available from:""")
-        # TODO: Fix this when the new endpoint is ready
-        office = offices[0]
-        if office.get('authority_name'):
-            rg.say(office['authority_name'])
-        if office.get('street'):
-            rg.say("Street address: %s, %s %s" % (office['street'], office['city'], office['state']))
-        if office.get('mailing_street'):
-            rg.say("Mailing address: %s, %s %s, %s" % (office['mailing_street'],
-                                                       office['mailing_city'], office['state'],
-                                                       office['mailing_zip']))
-        if office.get('phone'):
-            rg.say("Telephone number: %s" % office['phone'])
+        for office in offices:
+            if office.get('authority_name'):
+                rg.say(office['authority_name'])
+            if office.get('street'):
+                rg.say("Street address: %s, %s %s" % (office['street'], office['city'], office['state']))
+            if office.get('mailing_street'):
+                rg.say("Mailing address: %s, %s %s, %s" % (office['mailing_street'],
+                                                           office['mailing_city'], office['state'],
+                                                           office['mailing_zip']))
+            if office.get('phone'):
+                rg.say("Telephone number: %s" % office['phone'])
+
+        if len([office.get('phone') for office in offices if office.get('phone')]):
             rg.say("Press 1 to call your election office.")
         rg.say("""Press 2 to repeat this information.
                   Press 3 to enter a new zip code.
@@ -373,8 +376,22 @@ def call_election_office():
         r.redirect('.voting')
         return r
 
-    office = offices[0]
-    if office.get('phone'):
+    offices_with_phones = [office for office in offices if office.get('phone')]
+    office = None
+    if len(offices_with_phones) == 1:
+        office = offices_with_phones[0]
+    elif len(offices_with_phones) > 1:
+        if 'Digits' in g.request_params.keys():
+            office = offices_with_phones[int(g.request_params.get('Digits')) - 1]
+        else:
+            with r.gather(numDigits=1, timeout=settings.INPUT_TIMEOUT) as rg:
+                for i, office in enumerate(offices_with_phones):
+                    rg.say('Press %d to call %s at %s.' % (i + 1,
+                                                           office.get('authority_name'),
+                                                           office.get('phone')))
+            return r
+
+    if office and office.get('phone'):
         r.say("Connecting you to your election office at %s" % office['phone'])
         with r.dial() as rd:
             rd.number(office['phone'])
