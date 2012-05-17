@@ -1,9 +1,9 @@
 import datetime
 import json
+import re
 import urllib
 
 from dateutil.parser import parse as dateparse
-from geopy import geocoders
 from flask import g
 from influenceexplorer import InfluenceExplorer
 from sunlightapi import sunlight as sun
@@ -249,10 +249,11 @@ def election_offices_for_zip(zipcode):
     if doc is None:
         try:
             turbovote_url = "https://staging.turbovote.org/api/clerk/%s?token=%s"
+            offices = [_format_election_office(office) for office in json.loads(requests.get(turbovote_url % (zipcode, settings.TURBOVOTE_KEY)).content)['result']]
             doc = {
                 'timestamp': g.now,
                 'zipcode': zipcode,
-                'offices': json.loads(requests.get(turbovote_url % (zipcode, settings.TURBOVOTE_KEY)).content)['result']
+                'offices': offices
             }
             if isinstance(doc['offices'], dict):
                 doc['offices'] = [doc['offices']]
@@ -261,6 +262,13 @@ def election_offices_for_zip(zipcode):
             return []
 
     return doc['offices']
+
+
+def _format_election_office(office):
+    if office.get('phone'):
+        office['phone'] = int(re.sub(r'[^\d]+', '', office['phone']))
+
+    return office
 
 
 def subscribe_to_bill_updates(**kwargs):
