@@ -270,9 +270,9 @@ def _format_election_office(office):
         office['phone'] = None
         try:
             if len(phone) == 11:
-                office['phone'] = "%d-%d-%d" % (phone[1:4], phone[4:7], phone[7:11])
+                office['phone'] = "%s-%s-%s" % (phone[1:4], phone[4:7], phone[7:11])
             elif len(phone) == 10:
-                office['phone'] = "%d-%d-%d" % (phone[0:3], phone[3:6], phone[6:10])
+                office['phone'] = "%s-%s-%s" % (phone[0:3], phone[3:6], phone[6:10])
         except:
             pass
 
