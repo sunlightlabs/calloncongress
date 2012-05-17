@@ -10,6 +10,7 @@ from raven.handlers.logging import SentryHandler
 from flask import Flask, g, request
 from calloncongress import settings
 
+from calloncongress import twiml_monkeypatch
 from calloncongress.web import web
 from calloncongress.voice import voice
 # from calloncongress.sms import sms

@@ -79,7 +79,7 @@ def zipcode_selection():
             if len(sel) == 5:
                 write_context('zipcode', int(sel))
             else:
-                errors.append('%s is not a valid zipcode, please try again.' % sel)
+                errors.append('%s is not a valid zip code, please try again.' % sel)
 
             del g.request_params['Digits']
 

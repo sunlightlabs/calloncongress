@@ -1,5 +1,4 @@
 from flask import Blueprint, g, url_for
-from calloncongress import twiml_monkeypatch
 from twilio import twiml
 
 from calloncongress import data, settings
@@ -24,7 +23,7 @@ def index():
 
     with r.gather(numDigits=1, timeout=settings.INPUT_TIMEOUT) as rg:
         rg.say("""To begin, select from the following:
-                  Press 1 to find your member of congress.
+                  Press 1 to find your members of congress.
                   Press 2 to search U.S. House and Senate bills.
                   Press 3 to receive voter information.
                   Press 4 to learn more about the Sunlight Foundation and this service.
@@ -393,7 +392,7 @@ def call_election_office():
 def about_sunlight():
     r = twiml.Response()
     r.say("""The Sunlight Foundation is a non-partisan, non-profit that
-             use cutting-edge technology and ideas to make government
+             uses cutting-edge technology and ideas to make government
              transparent and accountable. We are committed to improving
              access to government information by making it available online
              to the public and by creating new tools to enable individuals

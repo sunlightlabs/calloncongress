@@ -1,23 +1,16 @@
-# Call on Congress
+Call on Congress
+================
 
-# /voice/
+A Twilio application for connecting to congressional data via telephone.
 
-* /                         # intro/language select
-* /en/members
-* /en/members?zipcode=00000
-* /en/members/A0000001
-* /en/members/A0000001/bio
-* /en/members/A0000001/call
-* /en/members/A0000001/committees
-* /en/members/A0000001/contributors
-* /en/members/A0000001/votes
-* /en/bills
-* /en/bills?n=245
-* /en/bills/hot
-* /en/bills/hr245
-* /en/bills/hr245/alerts
-* /en/voting
-* /en/sunlight
-* /en/sunlight/about
-* /en/sunlight/register
-* /en/sunlight/voicemail
+
+Installation
+------------
+
+Call on Congress targets Heroku, but can be run on other servers using gunicorn. To run:
+
+* Clone the repo
+* `pip install -r requirements.txt`
+* `cp calloncongress/local_settings.example.py calloncongress/local_settings.py`
+* Add your keys
+* `foreman start` (if you have foreman installed) or `./runserver.py` (will only use a single thread)
