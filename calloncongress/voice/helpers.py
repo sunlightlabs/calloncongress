@@ -78,6 +78,9 @@ def zipcode_selection():
             sel = g.request_params.get('Digits')
             if len(sel) == 5:
                 write_context('zipcode', int(sel))
+            elif sel == '9':
+                r.redirect(url_for('.main'))
+                return r
             else:
                 errors.append('%s is not a valid zip code, please try again.' % sel)
 
@@ -129,6 +132,9 @@ def bioguide_selection():
     # before prompting for a selection.
     legislators = read_context('legislators', [])
     if 'Digits' in g.request_params.keys() and len(legislators):
+        if len(legislators) < 8 and g.request_params['Digits'] == '9':
+            r.redirect(url_for('.main'))
+            return r
         sel = int(g.request_params['Digits'])
         del g.request_params['Digits']
         try:
@@ -166,6 +172,8 @@ def bioguide_selection():
             options = [(l['fullname'], l['bioguide_id']) for l in legislators]
             script = " ".join("Press %i for %s." % (index + 1, o[0]) for index, o in enumerate(options))
             script += " Press 0 to enter a new zip code."
+            if len(legislators) < 8:
+                script += " Press 9 to return to the previous menu."
             rg.say(script)
     else:
         r.say("We're sorry, we weren't able to locate any representatives for %s." % get_zip())
@@ -201,21 +209,6 @@ def load_member_for(bioguide):
     legislator = data.legislator_by_bioguide(bioguide)
     write_context('legislator', legislator)
     return legislator
-
-
-# def parent_url_for(current):
-#     from calloncongress.voice.menu import MENU
-#     parent = MENU.get(current).get('parent', 'main')
-#     try:
-#         if parent.func_name == 'referrer':
-#             try:
-#                 parent = parent_url_for(g.referrer)
-#             except AttributeError:
-#                 parent = 'main'
-#     except AttributeError:
-#         pass
-
-#     return url_for(MENU.get(parent).get('route'))
 
 
 def handle_selection(response, **kwargs):
