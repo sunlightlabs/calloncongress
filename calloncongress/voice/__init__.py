@@ -29,7 +29,8 @@ def index():
                   Press 4 to learn more about the Sunlight Foundation and this service.
                   At any time during this call, you can press 9 to return to the
                   previous menu.""")
-
+    
+    r.redirect(url_for('.index'))
     return r
 
 
@@ -67,6 +68,7 @@ def member():
                   Press 4 to call this representative's Capitol Hill office.
                   To return to the previous menu, press 9.""")
 
+    r.redirect(url_for('.member', bioguide_id=bioguide))
     return r
 
 
@@ -98,7 +100,7 @@ def member_donors():
     script = " ".join("%(name)s contributed $%(total_amount)s.\n" % c for c in contribs)
     r.say(script)
 
-    return next_action(r, default=url_for('.member', bioguide_id=bioguide))
+    return next_action(r, default=url_for('.member'))
 
 
 @voice.route("/member/votes/", methods=['GET', 'POST'])
@@ -149,6 +151,7 @@ def bills():
                   To search by bill number, press 2.
                   To return to the previous menu, press 9.""")
 
+    r.redirect(url_for('.bills'))
     return r
 
 
@@ -219,6 +222,7 @@ def search_bills():
                   To return to the previous menu, press 0, followed by the #.
                """)
 
+    r.redirect(url_for('.search_bills'))
     return r
 
 
@@ -301,6 +305,7 @@ def bill():
                   To return to the previous menu, press 9.
                   To return to the main menu, press 0.""")
 
+    r.redirect(url_for('.bill'))
     return r
 
 
@@ -317,6 +322,7 @@ def about():
                   To learn more about the Sunlight Foundation, press 1.
                   To leave feedback about Call on Congress, press 2.""")
 
+    r.redirect(url_for('.about'))
     return r
 
 
@@ -363,6 +369,8 @@ def voting():
         rg.say("""Press 2 to repeat this information.
                   Press 3 to enter a new zip code.
                   To return to the previous menu, press 9.""")
+    
+    r.redirect(url_for('.voting'))
     return r
 
 
