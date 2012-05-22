@@ -50,6 +50,7 @@ def language_selection():
                 rg.say('Press 1 to continue in English.', language='en')
                 rg.say('Presione 2 para continuar en espanol.', language='es')
 
+            r.redirect(request.path)
             return r
 
     return True
@@ -103,6 +104,7 @@ def zipcode_selection():
                 rg.say("""please use the telephone keypad to enter
                           your five-digit zip code now.""")
 
+            r.redirect(request.path)
             return r
 
     return True
@@ -183,6 +185,7 @@ def bioguide_selection():
         except:
             pass
 
+    r.redirect(request.path)
     return r
 
 
