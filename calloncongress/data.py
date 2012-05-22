@@ -120,7 +120,7 @@ def top_contributors(legislator):
 def legislator_bio(legislator):
     entity_id = resolve_entity_id(legislator['crp_id'])
     metadata = ie.entities.metadata(entity_id)
-    return metadata['metadata']['bio']
+    return metadata['metadata']['bio'].encode('ascii', 'xmlcharrefreplace')
 
 
 def committee_iter(committees):
