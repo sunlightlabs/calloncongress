@@ -51,9 +51,6 @@ def member():
     """Menu for a specific member of congress"""
 
     r = twiml.Response()
-    if g.request_params.get('Digits') == '0':
-        r.redirect(url_for('.members'))
-        return r
 
     bioguide = g.request_params['bioguide_id']
     legislator = read_context('legislator', load_member_for(bioguide))
@@ -98,7 +95,8 @@ def member_donors():
     legislator = read_context('legislator', load_member_for(bioguide))
     contribs = data.top_contributors(legislator)
     script = " ".join("%(name)s contributed $%(total_amount)s.\n" % c for c in contribs)
-    r.say(script)
+    with r.gather(numDigits=1, timeout=1, action=url_for('.member_donors', bioguide_id=bioguide)) as rg:
+        rg.say(script)
 
     return next_action(r, default=url_for('.member'))
 
@@ -114,7 +112,8 @@ def member_votes():
     legislator = read_context('legislator', load_member_for(bioguide))
     votes = data.recent_votes(legislator)
     script = " ".join("On %(question)s. Voted %(voted)s. . The vote %(result)s.\t" % v for v in votes)
-    r.say("Recent votes for %s. %s" % (legislator['fullname'], script))
+    with r.gather(numDigits=1, timeout=1, action=url_for('.member_votes', bioguide_id=bioguide)) as rg:
+        rg.say("Recent votes for %s. %s" % (legislator['fullname'], script))
 
     return next_action(r, default=url_for('.member', bioguide_id=bioguide))
 

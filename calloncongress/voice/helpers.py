@@ -123,11 +123,16 @@ def bioguide_selection():
 
     # Handle twimlet-style params
     if 'bioguide_id' in g.request_params.keys():
+        digits = g.request_params.get('Digits')
+        if digits == '9':
+            r.redirect(url_for('.member', bioguide_id=g.request_params['bioguide_id']))
+            return r
         return True
 
     # If Digits = 9 or 0, we're going back
-    if g.request_params.get('Digits') in ['9', '0']:
-        return True
+    if g.request_params.get('Digits') == '0':
+        r.redirect(url_for('.main'))
+        return r
 
     # Make sure there's a legislators list in the call context.
     # If not, short-circuit to zip collection and repost to get legislator list
