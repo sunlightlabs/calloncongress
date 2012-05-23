@@ -128,10 +128,15 @@ def bioguide_selection():
         digits = g.request_params.get('Digits')
         if digits == '9':
             if re.search(r'member\/[\w\d\/]*', request.path):
+                print 'member detail view'
                 r.redirect(url_for('.member', bioguide_id=g.request_params['bioguide_id']))
             else:
+                print 'member options view'
                 del g.request_params['bioguide_id']
                 r.redirect(url_for('.member'))
+            return r
+        elif digits == '0':
+            r.redirect(url_for('.index'))
             return r
         return True
 
