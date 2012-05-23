@@ -125,7 +125,7 @@ def bioguide_selection():
     if 'bioguide_id' in g.request_params.keys():
         digits = g.request_params.get('Digits')
         if digits == '9':
-            if request.path == '/member/':
+            if request.path in ['/member/', '/members/']:
                 r.redirect(url_for('.member'))
             r.redirect(url_for('.member', bioguide_id=g.request_params['bioguide_id']))
             return r
