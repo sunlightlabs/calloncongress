@@ -132,10 +132,16 @@ def bioguide_selection():
             return r
         return True
 
-    # If Digits 0, we're going back
+    # If Digits = 0, we're entering a new zip or going back
     if g.request_params.get('Digits') == '0':
-        r.redirect(url_for('.index'))
-        return r
+        if request.path in ['/member/', '/members/']:
+            flush_context('zipcode')
+            flush_context('legislators')
+            r.redirect(url_for('.member'))
+            return r
+        else:
+            r.redirect(url_for('.index'))
+            return r
 
     # Make sure there's a legislators list in the call context.
     # If not, short-circuit to zip collection and repost to get legislator list
