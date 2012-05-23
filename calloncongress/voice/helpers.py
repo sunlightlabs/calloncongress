@@ -80,7 +80,7 @@ def zipcode_selection():
             if len(sel) == 5:
                 write_context('zipcode', int(sel))
             elif sel == '9':
-                r.redirect(url_for('.main'))
+                r.redirect(url_for('.index'))
                 return r
             else:
                 errors.append('%s is not a valid zip code, please try again.' % sel)
@@ -131,9 +131,9 @@ def bioguide_selection():
             return r
         return True
 
-    # If Digits = 9 or 0, we're going back
+    # If Digits 0, we're going back
     if g.request_params.get('Digits') == '0':
-        r.redirect(url_for('.main'))
+        r.redirect(url_for('.index'))
         return r
 
     # Make sure there's a legislators list in the call context.
@@ -142,7 +142,7 @@ def bioguide_selection():
     legislators = read_context('legislators', [])
     if 'Digits' in g.request_params.keys() and len(legislators):
         if len(legislators) < 8 and g.request_params['Digits'] == '9':
-            r.redirect(url_for('.main'))
+            r.redirect(url_for('.index'))
             return r
         sel = int(g.request_params['Digits'])
         del g.request_params['Digits']
