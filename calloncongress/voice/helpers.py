@@ -1,3 +1,5 @@
+import re
+
 from twilio import twiml
 from flask import g, request, url_for
 from calloncongress import settings, data
@@ -125,16 +127,17 @@ def bioguide_selection():
     if 'bioguide_id' in g.request_params.keys():
         digits = g.request_params.get('Digits')
         if digits == '9':
-            if request.path in [url_for('.member'), url_for('members')]:
-                r.redirect(url_for('.member'))
-            else:
+            if re.search(r'member\/[\w\d\/]*', request.path):
                 r.redirect(url_for('.member', bioguide_id=g.request_params['bioguide_id']))
+            else:
+                del g.request_params['bioguide_id']
+                r.redirect(url_for('.member'))
             return r
         return True
 
     # If Digits = 0, we're entering a new zip or going back
     if g.request_params.get('Digits') == '0':
-        if request.path in [url_for('.member'), url_for('members')]:
+        if len(read_context('legislators', [])):
             flush_context('zipcode')
             flush_context('legislators')
             r.redirect(url_for('.member'))
