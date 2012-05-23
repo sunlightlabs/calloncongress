@@ -145,6 +145,7 @@ def bioguide_selection():
 
             return True
         except:
+            del g.request_params['Digits']
             r.say('%d is not a valid selection, please try again.' % sel)
 
     # If we don't have a bioguide, or legislators, or a zip selection,
