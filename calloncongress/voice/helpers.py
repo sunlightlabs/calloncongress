@@ -126,6 +126,7 @@ def bioguide_selection():
         digits = g.request_params.get('Digits')
         if digits == '9':
             print request.path
+            print url_for('.member')
             if request.path in ['/member/', '/members/']:
                 r.redirect(url_for('.member'))
             else:
