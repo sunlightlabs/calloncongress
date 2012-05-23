@@ -89,9 +89,9 @@ def zipcode_selection():
 
         # Prompt and gather if zip is not valid or no choice was submitted
         if not get_zip():
-            if request.path.startswith('/member'):
+            if request.path.startswith(url_for('.member')):
                 reason = 'To help us identify your representatives,'
-            elif request.path.startswith('/voting'):
+            elif request.path.startswith(url_for('.voting')):
                 reason = 'To help us find your election office,'
             else:
                 reason = None
@@ -125,9 +125,7 @@ def bioguide_selection():
     if 'bioguide_id' in g.request_params.keys():
         digits = g.request_params.get('Digits')
         if digits == '9':
-            print request.path
-            print url_for('.member')
-            if request.path in ['/member/', '/members/']:
+            if request.path in [url_for('.member'), url_for('members')]:
                 r.redirect(url_for('.member'))
             else:
                 r.redirect(url_for('.member', bioguide_id=g.request_params['bioguide_id']))
@@ -136,7 +134,7 @@ def bioguide_selection():
 
     # If Digits = 0, we're entering a new zip or going back
     if g.request_params.get('Digits') == '0':
-        if request.path in ['/member/', '/members/']:
+        if request.path in [url_for('.member'), url_for('members')]:
             flush_context('zipcode')
             flush_context('legislators')
             r.redirect(url_for('.member'))
