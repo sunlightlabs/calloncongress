@@ -29,7 +29,7 @@ def index():
                   Press 4 to learn more about the Sunlight Foundation and this service.
                   At any time during this call, you can press 9 to return to the
                   previous menu.""")
-    
+
     r.redirect(url_for('.index'))
     return r
 
@@ -368,7 +368,7 @@ def voting():
         rg.say("""Press 2 to repeat this information.
                   Press 3 to enter a new zip code.
                   To return to the previous menu, press 9.""")
-    
+
     r.redirect(url_for('.voting'))
     return r
 
@@ -495,8 +495,10 @@ def test_scout():
     r = twiml.Response()
     params = {
         'phone': g.request_params.get('phone', '6173140966'),
-        'interest_type': 'bill',
+        'interest_type': 'item',
+        'item_type': 'bill',
         'item_id': g.request_params.get('item_id', 'hr4310-112'),
+        'source': 'call_on_congress',
     }
     if data.subscribe_to_bill_updates(**params):
         r.say('You have been subscribed. A confirmation message has been sent to %s.' % params['phone'])
