@@ -339,7 +339,7 @@ def subscribe_to_bill_updates():
         }
 
         if data.subscribe_to_bill_updates(**params):
-            r.say('You have been subscribed. A confirmation message has been sent to %s.' % " ".join(g.call['from']))
+            r.say('You have been subscribed. A confirmation message has been sent to %s.' % " ".join(g.call['from'][1:]))
         else:
             r.say('Sorry, there was an error subscribing you.')
 
