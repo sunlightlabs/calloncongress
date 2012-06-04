@@ -339,14 +339,14 @@ def subscribe_to_bill_updates():
         }
 
         if data.subscribe_to_bill_updates(**params):
-            r.say('You have been subscribed. A confirmation message has been sent to %s.' % g.call['from'])
+            r.say('You have been subscribed. A confirmation message has been sent to %s.' % " ".join(g.call['from']))
         else:
             r.say('Sorry, there was an error subscribing you.')
 
     else:
         r.say('Sorry, we were unable to identify your phone number.')
 
-    r.redirect(url_for('.bill'))
+    r.redirect(url_for('.bills'))
     return str(r)
 
 
