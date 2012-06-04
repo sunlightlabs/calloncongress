@@ -264,6 +264,8 @@ def bill():
         r.redirect(url_for('.bills'))
         return r
 
+    write_context('bill_id', bill['bill_id'])
+
     if 'Digits' in g.request_params.keys():
         if g.request_params['Digits'] == '3':
             pass
@@ -306,6 +308,46 @@ def bill():
 
     r.redirect(url_for('.bill'))
     return r
+
+
+@voice.route("/bill/subscribe/", methods=['GET', 'POST'])
+@twilioify
+@validate_before(language_selection)
+def subscribe_to_bill_updates():
+
+    r = twiml.Response()
+
+    bill_id = read_context('bill_id')
+    if not bill_id:
+        r.redirect(url_for('.bills'))
+        return r
+
+    bill = data.get_bill_by_id(bill_id)
+    if not bill:
+        r.say("No bill was found matching %s" % bill_id)
+        r.redirect(url_for('.bills'))
+        return r
+
+    if 'from' in g.call:
+
+        params = {
+            'phone': g.call['from'],
+            'interest_type': 'item',
+            'item_type': 'bill',
+            'item_id': bill_id,
+            'source': 'call_on_congress',
+        }
+
+        if data.subscribe_to_bill_updates(**params):
+            r.say('You have been subscribed. A confirmation message has been sent to %s.' % g.call['from'])
+        else:
+            r.say('Sorry, there was an error subscribing you.')
+
+    else:
+        r.say('Sorry, we were unable to identify your phone number.')
+
+    r.redirect(url_for('.bill'))
+    return str(r)
 
 
 @voice.route("/about/", methods=['GET', 'POST'])
