@@ -287,7 +287,7 @@ def subscribe_to_bill_updates(**kwargs):
         'X-Twilio-Post-Body': urllib.urlencode(request.form),
     }
     params = kwargs
-    r = requests.post('http://scout.sunlightlabs.com/remote/subscribe/sms', data=json.dumps(params), headers=headers)
+    r = requests.post('http://scout.sunlightlabs.com/remote/subscribe/sms', data=params, headers=headers)
     if r.status_code == 200:
         return True
     else:
