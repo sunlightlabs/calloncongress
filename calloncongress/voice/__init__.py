@@ -62,8 +62,8 @@ def member():
         rg.say("""Press 1 to hear a short biography.
                   Press 2 for a list of top campaign donors.
                   Press 3 for recent votes in congress.
-                  Press 4 to call this representative's Capitol Hill office.
-                  To return to the previous menu, press 9.""")
+                  Press 4 to call this representative's Capitol Hill office.""")
+        rg.say("""To return to the previous menu, press 9.""")
 
     r.redirect(url_for('.member', bioguide_id=bioguide))
     return r
@@ -147,8 +147,8 @@ def bills():
     with r.gather(numDigits=1, timeout=settings.INPUT_TIMEOUT) as rg:
         rg.say("""To learn about legislation in congress, please select from the following:
                   For upcoming bills in the news, press 1.
-                  To search by bill number, press 2.
-                  To return to the previous menu, press 9.""")
+                  To search by bill number, press 2.""")
+        rg.say("""To return to the previous menu, press 9.""")
 
     r.redirect(url_for('.bills'))
     return r
@@ -205,7 +205,8 @@ def search_bills():
             write_context('bills', bills)
             with r.gather(numDigits=1, timeout=settings.INPUT_TIMEOUT,
                           action=url_for('.select_bill', **query)) as rg:
-                rg.say("Multiple bills were found. Please select from the following:")
+                rg.say("Multiple bills were found.")
+                rg.say("Please select from the following:")
                 for i, bill in enumerate(bills):
                     bill['bill_context']['button'] = i + 1
                     rg.say("Press {button} for {bill_type} {bill_number}, {bill_title}".format(**bill['bill_context']))
@@ -216,10 +217,9 @@ def search_bills():
             r.say('No bills were found matching that number.')
 
     with r.gather(timeout=settings.INPUT_TIMEOUT) as rg:
-        rg.say("""Enter the number of the bill to search for, followed by the #.
-                  Exclude any prefixes such as H.R. or S.
-                  To return to the previous menu, press 0, followed by the #.
-               """)
+        rg.say("""Enter the number of the bill to search for, followed by the pound sign.
+                  Exclude any prefixes such as H.R. or S.""")
+        rg.say("""To return to the previous menu, press 0, followed by the pound sign.""")
 
     r.redirect(url_for('.search_bills'))
     return r
@@ -260,7 +260,8 @@ def bill():
     r = twiml.Response()
     bill = data.get_bill_by_id(g.request_params['bill_id'])
     if not bill:
-        r.say("No bill was found matching %s" % g.request_params['bill_id'])
+        r.say("No bill was found matching")
+        r.say("%s" % g.request_params['bill_id'])
         r.redirect(url_for('.bills'))
         return r
 
@@ -278,8 +279,9 @@ def bill():
     if len(bill.get('summary', '')) > 800 and not 'Digits' in g.request_params:
         with r.gather(numDigits=1, timeout=2) as rg:
             words = bill['summary'].split()
-            rg.say("This bill's summary is %d words. Press 3 now to hear the long version, including the summary." %
-                len(words))
+            rg.say("This bill's summary is")
+            rg.say(" %d " % len(words))
+            rg.say("words. Press 3 now to hear the long version, including the summary.")
 
     with r.gather(numDigits=1, timeout=1) as rg:
         rg.say("{bill_type} {bill_number}: {bill_title}".format(**ctx))
@@ -301,10 +303,10 @@ def bill():
         return r
 
     with r.gather(numDigits=1, timeout=settings.INPUT_TIMEOUT) as rg:
-        rg.say("""To get SMS updates about this bill on your mobile phone, press 1.
-                  To search for another bill, press 2.
-                  To return to the previous menu, press 9.
-                  To return to the main menu, press 0.""")
+        rg.say("""Press 1 to get text message updates about this bill on your mobile phone.
+                  Press 2 to search for another bill.""")
+        rg.say("""To return to the previous menu, press 9""")
+        rg.say("""Press 0 to return to the main menu.""")
 
     r.redirect(url_for('.bill'))
     return r
@@ -360,8 +362,8 @@ def about():
 
     with r.gather(numDigits=1, timeout=settings.INPUT_TIMEOUT) as rg:
         rg.say("""Thank you for using Call on Congress.
-                  To learn more about the Sunlight Foundation, press 1.
-                  To leave feedback about Call on Congress, press 2.""")
+                  Press 1 to learn more about the Sunlight Foundation.
+                  Press 2 to leave feedback about Call on Congress.""")
 
     r.redirect(url_for('.about'))
     return r
@@ -376,7 +378,7 @@ def voting():
     offices = data.election_offices_for_zip(zipcode)
 
     if not len(offices):
-        r.say("""We're sorry, no offices were found for that zip code.""")
+        r.say("""We were unable to find any offices for that zip code.""")
         flush_context('zipcode')
         r.redirect(url_for('.voting'))
         return r
@@ -408,8 +410,8 @@ def voting():
         if len([office.get('phone') for office in offices if office.get('phone')]):
             rg.say("Press 1 to call your election office.")
         rg.say("""Press 2 to repeat this information.
-                  Press 3 to enter a new zip code.
-                  To return to the previous menu, press 9.""")
+                  Press 3 to enter a new zip code.""")
+        rg.say("""To return to the previous menu, press 9.""")
 
     r.redirect(url_for('.voting'))
     return r
@@ -442,7 +444,8 @@ def call_election_office():
             return r
 
     if office and office.get('phone'):
-        r.say("Connecting you to your election office at %s" % office['phone'])
+        r.say("Connecting you to your election office at")
+        r.say(" %s" % office['phone'])
         with r.dial() as rd:
             rd.number(office['phone'])
     else:
@@ -463,9 +466,8 @@ def about_sunlight():
              transparent and accountable. We are committed to improving
              access to government information by making it available online
              to the public and by creating new tools to enable individuals
-             and communities to better access information and put it to use.
-
-             Learn more by visiting sunlight foundation dot com or by
+             and communities to better access information and put it to use.""")
+    r.say("""Learn more by visiting sunlight foundation dot com or by
              calling 202-742-1520""")
 
     return next_action(r, default=url_for('.about'))
@@ -496,9 +498,10 @@ def signup():
             r.say('You will now be returned to the main menu.')
     else:
         with r.gather(timeout=settings.INPUT_TIMEOUT) as rg:
-            rg.say("""To subscribe with the number you've called from, press 1, followed by the #.
-                     To subscribe with a different number, enter the 10 digit number now, followed by the #.
-                     To return to the previous menu, enter 0, followed by the #.""")
+            rg.say("""To subscribe with the number you've called from, press 1, followed by the pound sign.
+                      To subscribe with a different number, enter the 10 digit number now, followed by the pound sign.""")
+            #rg.say("""To return to the previous menu, enter 0, followed by the pound sign.""")
+            rg.say("""Press 0 to return to the main menu.""")
 
         return r
 
@@ -519,7 +522,8 @@ def feedback():
             r.say("Thank you for your feedback. You will now be returned to the main menu.")
     else:
         r.say("""To leave feedback about Call on Congress or to contact the
-                 Sunlight Foundation, please leave a message at the tone. Press the # when finished.""")
+                 Sunlight Foundation, please leave a message at the tone.
+                 Press the pound sign when finished.""")
         r.record(timeout=10, maxLength=120)
         return r
 
@@ -543,8 +547,9 @@ def test_scout():
         'source': 'call_on_congress',
     }
     if data.subscribe_to_bill_updates(**params):
-        r.say('You have been subscribed. A confirmation message has been sent to %s.' % params['phone'])
+        r.say('You are subscribed. A confirmation message was sent to')
+        r.say('%s' % params['phone'])
     else:
-        r.say('Sorry, there was an error subscribing you.')
+        r.say("""We're sorry, there was an error subscribing you.""")
 
     return str(r)

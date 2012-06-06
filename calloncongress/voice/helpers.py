@@ -190,8 +190,8 @@ def bioguide_selection():
                           you will be provided with a list of all possible legislators that
                           may represent you. Please select from the following names:""")
             else:
-                rg.say("""We identified your representatives in Congress. Please select from
-                          the following names:""")
+                rg.say("""We identified your representatives in Congress.""")
+                rg.say("""Please select from the following:""")
             options = [(l['fullname'], l['bioguide_id']) for l in legislators]
             script = " ".join("Press %i for %s." % (index + 1, o[0]) for index, o in enumerate(options))
             script += " Press 0 to enter a new zip code."
@@ -199,7 +199,8 @@ def bioguide_selection():
                 script += " Press 9 to return to the previous menu."
             rg.say(script)
     else:
-        r.say("We're sorry, we weren't able to locate any representatives for %s." % get_zip())
+        r.say("We were unable to locate any representatives for")
+        r.say("%s." % get_zip())
         flush_context('zipcode')
         try:
             del g.request_params['Digits']
