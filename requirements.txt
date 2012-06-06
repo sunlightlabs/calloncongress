@@ -12,4 +12,5 @@ blinker
 python-dateutil<2
 pyglot
 geopy
+newrelic
 -e git+https://github.com/sunlightlabs/python-realtimecongress.git#egg=realtimecongress
