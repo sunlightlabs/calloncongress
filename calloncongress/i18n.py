@@ -43,7 +43,8 @@ def audio_root_as_url():
 def audio_filename_for(text, **kwargs):
     ext = kwargs.get('ext', 'mp3')
     slug = slugify(text[:40])
-    hsh = hashlib.md5(text).hexdigest()
+    # hash text with whitespace removed
+    hsh = hashlib.md5(re.sub(r'\s', '', text)).hexdigest()
     return "%s-%s.%s" % (hsh, slug, ext)
 
 
