@@ -18,7 +18,7 @@ class Say(twilio.twiml.Say):
         lang = kwargs['language']
         kwargs['language'] = ACCENT_MAP.get(lang, lang)
 
-        url = translate_audio(audio_filename_for(text))
+        url = translate_audio(audio_filename_for(text), language=lang)
         print audio_filename_for(text)
         exists = False
         try:
