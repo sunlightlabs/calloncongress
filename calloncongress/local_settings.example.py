@@ -9,3 +9,4 @@ MONGOHQ_URI = ""
 MONGO_URI = ""
 
 AUDIO_ROOT = "/static/audio"
+STATIC_VERSION = ""
