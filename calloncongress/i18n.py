@@ -45,7 +45,7 @@ def audio_filename_for(text, **kwargs):
     slug = slugify(text[:40])
     # hash text with whitespace removed
     hsh = hashlib.md5(re.sub(r'\s', '', text)).hexdigest()
-    return "%s-%s.%s" % (hsh, slug, ext)
+    return "%s-%s.%s?v=%s" % (hsh, slug, ext, getattr(settings, 'STATIC_VERSION', '1'))
 
 
 def translate_audio(filename, **kwargs):
