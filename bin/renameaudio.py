@@ -5,8 +5,6 @@ import sys
 PWD = os.path.abspath(os.path.dirname(__file__))
 LANGUAGES = ('en', 'es', 'eo')
 
-#BASE_PATH = "/Users/Jeremy/Projects/calloncongress/audio/%s/%s.%s"
-
 
 def pathify(p):
     p = os.path.expanduser(p)
