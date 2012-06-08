@@ -21,6 +21,7 @@ class Say(twilio.twiml.Say):
 
         url = translate_audio(audio_filename_for(text), language=lang)
         print audio_filename_for(text)
+        print url
         exists = False
         try:
             exists = (requests.head(url, timeout=1.5).status_code == 200)
