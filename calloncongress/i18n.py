@@ -49,7 +49,6 @@ def audio_filename_for(text, **kwargs):
 
 
 def translate_audio(filename, **kwargs):
-    print kwargs
     if 'language' not in kwargs.keys():
         kwargs.update(language=get_lang(default=settings.DEFAULT_LANGUAGE))
     return "%s/%s/%s" % (audio_root_as_url(), kwargs.get('language'), filename)

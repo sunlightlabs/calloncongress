@@ -17,11 +17,8 @@ class Say(twilio.twiml.Say):
             kwargs.update(language=lang)
 
         lang = kwargs['language']
-        kwargs['language'] = ACCENT_MAP.get(lang, lang)
 
         url = translate_audio(audio_filename_for(text), language=lang)
-        print audio_filename_for(text)
-        print url
         exists = False
         try:
             exists = (requests.head(url, timeout=1.5).status_code == 200)
@@ -31,6 +28,8 @@ class Say(twilio.twiml.Say):
         if exists and 'voice' not in g.request_params.keys():
             play = Play(audio_filename_for(text), **kwargs)
             return play
+        else:  # Only adjust language via accent map if we don't have audio.
+            kwargs['language'] = ACCENT_MAP.get(lang, lang)
 
         return super(Say, cls).__new__(cls, text, **kwargs)
 
@@ -50,7 +49,6 @@ class Play(twilio.twiml.Play):
     def __init__(self, url, **kwargs):
         super(Play, self).__init__(url, **kwargs)
         self.body = translate_audio(url, **kwargs)
-        print self.body
 
 twilio.twiml.Say = Say
 twilio.twiml.Play = Play
