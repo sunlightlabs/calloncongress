@@ -29,7 +29,7 @@ class Say(twilio.twiml.Say):
             pass
         # Play audio if it exists. If a voice was passed explicitly, never play audio.
         if exists and 'voice' not in g.request_params.keys():
-            play = Play(audio_filename_for(text), **kwargs)
+            play = Play(url, **kwargs)
             return play
 
         return super(Say, cls).__new__(cls, text, **kwargs)
