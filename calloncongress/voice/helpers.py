@@ -35,6 +35,7 @@ def language_selection():
             sel = int(g.request_params.get('Digits', 1))
             try:
                 write_context('language', settings.LANGUAGES[sel - 1][0])
+                print settings.LANGUAGES[sel - 1][0]
             except:
                 errors.append('%d is not a valid selection, please try again.')
 
