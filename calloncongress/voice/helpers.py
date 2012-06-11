@@ -70,7 +70,7 @@ def zipcode_selection():
 
     # Twimlet use
     if 'zipcode' in g.request_params.keys():
-        write_context('zipcode', int(g.request_params['zipcode']))
+        write_context('zipcode', g.request_params['zipcode'])
 
     # Internal app use
     if not get_zip():
@@ -81,7 +81,7 @@ def zipcode_selection():
         if 'Digits' in g.request_params.keys():
             sel = g.request_params.get('Digits')
             if len(sel) == 5:
-                write_context('zipcode', int(sel))
+                write_context('zipcode', sel)
             elif sel == '9':
                 r.redirect(url_for('.index'))
                 return r
