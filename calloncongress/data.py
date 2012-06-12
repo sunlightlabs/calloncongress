@@ -248,7 +248,7 @@ def election_offices_for_zip(zipcode):
 
     if doc is None:
         try:
-            turbovote_url = "https://staging.turbovote.org/api/clerk/%s?token=%s"
+            turbovote_url = "https://turbovote.org/api/clerk/%s?token=%s"
             offices = [_format_election_office(office) for office in json.loads(requests.get(turbovote_url % (zipcode, settings.TURBOVOTE_KEY)).content)['result']]
             doc = {
                 'timestamp': g.now,
