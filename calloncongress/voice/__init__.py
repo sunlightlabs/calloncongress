@@ -79,7 +79,7 @@ def member_bio():
     bioguide = g.request_params['bioguide_id']
     legislator = read_context('legislator', load_member_for(bioguide))
     with r.gather(numDigits=1, timeout=1, action=url_for('.member_bio', bioguide_id=bioguide)) as rg:
-        rg.say(data.legislator_bio(legislator))
+        rg.say(data.legislator_bio(legislator) or 'There is no biography available for this legislator.')
 
     return next_action(r, default=url_for('.member', bioguide_id=bioguide))
 
