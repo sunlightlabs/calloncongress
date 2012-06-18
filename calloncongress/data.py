@@ -218,7 +218,8 @@ def _format_bill(bill):
         'bill_type': btype,
         'bill_number': bnumber,
         'bill_title': title.encode('ascii', 'ignore'),
-        'bill_description': '\n'.join(ctx).encode('ascii', 'ignore')
+        'bill_description': '\n'.join(ctx).encode('ascii', 'ignore'),
+        'summary': bill.get('summary') or '',
     }
     if len(bill.get('actions', [])):
         bill_context.update(bill_status="%s on %s" % (bill['last_action'].get('text'),
