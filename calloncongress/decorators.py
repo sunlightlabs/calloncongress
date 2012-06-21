@@ -3,44 +3,51 @@ from functools import wraps
 from flask import abort, g, request, Response
 from twilio.util import RequestValidator
 
-from calloncongress.helpers import read_context, write_context
+from calloncongress.helpers import read_context
 from calloncongress import settings
 
 
-def twilioify(func):
+def twilioify(validate=True):
     """
     Decorator that validates Twilio calls and creates the call context in the request.
     """
-    @wraps(func)
-    def decorated(*args, **kwargs):
-        if 'CallSid' not in request.values:
-            return abort(401, 'Request must be a signed Twilio request.')
+    def decorator(func):
+        @wraps(func)
+        def decorated(*args, **kwargs):
 
-        validator = RequestValidator(settings.TWILIO_AUTH_TOKEN)
-        sig_header = request.headers.get('X-Twilio-Signature', '')
+            print request.values
 
-        if request.method == 'POST':
-            vparams = request.form
-            vurl = request.url
-        else:
-            vparams = {}
-            vurl = request.url
+            if 'CallSid' not in request.values:
+                return abort(401, 'Request must be a signed Twilio request.')
 
-        # validator params are called URL, POST vars, and signature
-        if not validator.validate(vurl, vparams, sig_header):
-            return abort(401)
+            if validate:
 
-        # load the call from Mongo or create if one does not exist
-        g.call = load_call(request.values['CallSid'], request.values)
+                validator = RequestValidator(settings.TWILIO_AUTH_TOKEN)
+                sig_header = request.headers.get('X-Twilio-Signature', '')
 
-        g.zipcode = read_context('zipcode', None)
-        g.legislator = read_context('legislator', None)
+                if request.method == 'POST':
+                    vparams = request.form
+                    vurl = request.url
+                else:
+                    vparams = {}
+                    vurl = request.url
 
-        twilio_response = func(*args, **kwargs)
+                # validator params are called URL, POST vars, and signature
+                if not validator.validate(vurl, vparams, sig_header):
+                    return abort(401, 'Request signature could not be validated')
 
-        return Response(str(twilio_response), mimetype='application/xml')
+            # load the call from Mongo or create if one does not exist
+            g.call = load_call(request.values['CallSid'], request.values)
 
-    return decorated
+            g.zipcode = read_context('zipcode', None)
+            g.legislator = read_context('legislator', None)
+
+            twilio_response = func(*args, **kwargs)
+
+            return Response(str(twilio_response), mimetype='application/xml')
+
+        return decorated
+    return decorator
 
 
 def validate_before(*args):
