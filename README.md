@@ -37,3 +37,15 @@ Call on Congress supports a default language set of English, Spanish, and Espera
 1. `data/script.json` maps lines in the spoken script to a pre-generated file name. Set your audio files to the names specified in the mapping file and place them in the following directory:
 
         static/audio/<language code>/
+
+## Twimlets
+
+/member/bio/?language=<lang>&bioguide_id=<id>&next=<url>
+/member/donors/?language=<lang>&bioguide_id=<id>&next=<url>
+/member/votes/?language=<lang>&bioguide_id=<id>&next=<url>
+/member/call/?language=<lang>&bioguide_id=<id>&next=<url>
+
+/bills/upcoming/?language=<lang>&next=<url>
+
+/voting/call/?language=<lang>&zipcode=<zipcode>&next=<error_url>
+
