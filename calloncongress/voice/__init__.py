@@ -11,7 +11,7 @@ voice = Blueprint('voice', __name__)
 
 
 @voice.route("/", methods=['GET', 'POST'])
-@twilioify
+@twilioify()
 @validate_before(language_selection)
 def index():
     """Handles an inbound call. This is the default route, which directs initial setup items.
@@ -35,7 +35,7 @@ def index():
 
 
 @voice.route("/members/", methods=['GET', 'POST'])
-@twilioify
+@twilioify()
 @validate_before(language_selection, zipcode_selection)
 def members():
     """Meta-route to make sure legislators can be loaded before selecting by bioguide.
@@ -45,7 +45,7 @@ def members():
 
 
 @voice.route("/member/", methods=['GET', 'POST'])
-@twilioify
+@twilioify()
 @validate_before(language_selection, bioguide_selection)
 def member():
     """Menu for a specific member of congress"""
@@ -70,7 +70,7 @@ def member():
 
 
 @voice.route("/member/bio/", methods=['GET', 'POST'])
-@twilioify
+@twilioify(validate=False)
 @validate_before(language_selection, bioguide_selection)
 def member_bio():
     """Biography for a specific member of congress"""
@@ -85,7 +85,7 @@ def member_bio():
 
 
 @voice.route("/member/donors/", methods=['GET', 'POST'])
-@twilioify
+@twilioify(validate=False)
 @validate_before(language_selection, bioguide_selection)
 def member_donors():
     """Top campaign donors for a member of congress"""
@@ -102,7 +102,7 @@ def member_donors():
 
 
 @voice.route("/member/votes/", methods=['GET', 'POST'])
-@twilioify
+@twilioify(validate=False)
 @validate_before(language_selection, bioguide_selection)
 def member_votes():
     """Recent votes by a member of congress"""
@@ -119,7 +119,7 @@ def member_votes():
 
 
 @voice.route("/member/call/", methods=['GET', 'POST'])
-@twilioify
+@twilioify(validate=False)
 @validate_before(language_selection, bioguide_selection)
 def call_member():
     """Calls the DC office of a member of congress"""
@@ -135,7 +135,7 @@ def call_member():
 
 
 @voice.route("/bills/", methods=['GET', 'POST'])
-@twilioify
+@twilioify()
 @validate_before(language_selection)
 def bills():
     """Menu for interacting with bills"""
@@ -155,7 +155,7 @@ def bills():
 
 
 @voice.route("/bills/upcoming/", methods=['GET', 'POST'])
-@twilioify
+@twilioify(validate=False)
 @validate_before(language_selection)
 def upcoming_bills():
     """Bills on the floor this week"""
@@ -182,7 +182,7 @@ def upcoming_bills():
 
 
 @voice.route("/bills/search/", methods=['GET', 'POST'])
-@twilioify
+@twilioify()
 @validate_before(language_selection)
 def search_bills():
     """Search route for bills"""
@@ -226,7 +226,7 @@ def search_bills():
 
 
 @voice.route("/bills/select/", methods=['GET', 'POST'])
-@twilioify
+@twilioify()
 @validate_before(language_selection)
 def select_bill():
     """Meta-route for handling multiple bills returned from search"""
@@ -252,7 +252,7 @@ def select_bill():
 
 
 @voice.route("/bill/", methods=['GET', 'POST'])
-@twilioify
+@twilioify()
 @validate_before(language_selection, bill_selection)
 def bill():
     """Details about, and options for, a specific bill"""
@@ -313,7 +313,7 @@ def bill():
 
 
 @voice.route("/bill/subscribe/", methods=['GET', 'POST'])
-@twilioify
+@twilioify()
 @validate_before(language_selection)
 def subscribe_to_bill_updates():
 
@@ -353,7 +353,7 @@ def subscribe_to_bill_updates():
 
 
 @voice.route("/about/", methods=['GET', 'POST'])
-@twilioify
+@twilioify()
 @validate_before(language_selection)
 def about():
     r = twiml.Response()
@@ -370,7 +370,7 @@ def about():
 
 
 @voice.route("/voting/", methods=['GET', 'POST'])
-@twilioify
+@twilioify()
 @validate_before(language_selection, zipcode_selection)
 def voting():
     r = twiml.Response()
@@ -418,7 +418,7 @@ def voting():
 
 
 @voice.route("/voting/call/", methods=['GET', 'POST'])
-@twilioify
+@twilioify(validate=False)
 @validate_before(language_selection, zipcode_selection)
 def call_election_office():
     r = twiml.Response()
@@ -457,7 +457,7 @@ def call_election_office():
 
 
 @voice.route("/about/sunlight/", methods=['GET', 'POST'])
-@twilioify
+@twilioify()
 @validate_before(language_selection)
 def about_sunlight():
     r = twiml.Response()
@@ -474,7 +474,7 @@ def about_sunlight():
 
 
 @voice.route("/about/signup/", methods=['GET', 'POST'])
-@twilioify
+@twilioify()
 @validate_before(language_selection)
 def signup():
     r = twiml.Response()
@@ -509,7 +509,7 @@ def signup():
 
 
 @voice.route("/about/feedback/", methods=['GET', 'POST'])
-@twilioify
+@twilioify()
 @validate_before(language_selection)
 def feedback():
     r = twiml.Response()
