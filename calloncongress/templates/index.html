@@ -31,6 +31,8 @@
             #phoneImg { margin-left: 10px;}
             .sharing > div { display: block; float: right; }
             .sharing-tw { margin-right: 0.9em; }
+            .twimlets { margin-top: 5em; }
+            .twimlets .span6 { margin-top: 2em; margin-bottom: 1em; }
         </style>
         <script type="text/javascript" src="http://use.typekit.com/tab6neo.js"></script>
         <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
@@ -65,7 +67,7 @@
                     </div>
 
                     <div class="sharing-tw">
-                        <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://sunlightfoundation.com/calloncongress/" data-text="Check out #CallonCongress, @sunfoundation's new tool to connect with Congress via phone. 1-888-907-6886 #opengov" data-lang="en" data-count="vertical">Tweet</a>
+                        <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://calloncongress.sunlightfoundation.com/" data-text="Check out #CallonCongress, @sunfoundation's new tool to connect with Congress via phone. 1-888-907-6886 #opengov" data-lang="en" data-count="vertical">Tweet</a>
                     </div>
 
                     <div class="sharing-fb">
@@ -99,6 +101,59 @@
                     <div class="span7">
                         <p>The Sunlight Foundation created Call on Congress to help bridge the “digital divide” by giving anyone with a phone line a free and meaningful way to understand their government and hold elected officials accountable.</p>
                         <p>If you are a non-profit, community or advocacy group interested in learning more about Call on Congress, please contact Amy Ngai at angai@sunlightfoundation.com.</p>
+                    </div>
+                </div>
+                <div class="row twimlets">
+                    <div class="span12">
+                        <h3>Use Call on Congress in your own Twilio applications</h3>
+
+                        <p>A number of <a href="https://www.twilio.com/labs/twimlets">twimlets</a> are provided for use in your own applications. The following parameters are used in the twimlet URLs:</p>
+
+                        <ul>
+                        <li><code>&lt;lang&gt;</code> Language, must be one of <em>en</em>, <em>es</em>, or <em>eo</em>.</li>
+                        <li><code>&lt;id&gt;</code> Bioguide ID for the member of Congress. Can be found at the <a href="http://bioguide.congress.gov/biosearch/biosearch.asp">Biographical Directory of the US Congress</a>.</li>
+                        <li><code>&lt;url&gt;</code> A valid URL for redirection after the twimlet completes.</li>
+                        <li><code>&lt;zipcode&gt;</code> A valid five-digit zipcode.</li>
+                        </ul>
+
+                        <div class="row">
+                            <div class="span6">
+                                <h4>Member Biography</h4>
+                                <p>Reads a short biography of the specified member.</p>
+                                <pre><code>http://calloncongress.sunlightfoundation.com/voice/member/bio/?language=&lt;lang&gt;&amp;bioguide_id=&lt;id&gt;&amp;next_url=&lt;url&gt;</code></pre>
+                            </div>
+                            <div class="span6">
+                                <h4>Top Campaign Donors for a Member</h4>
+                                <p>Reads the top ten contributors to the member&rsquo;s campaign for the current election cycle.</p>
+                                <pre><code>http://calloncongress.sunlightfoundation.com/voice/member/donors/?language=&lt;lang&gt;&amp;bioguide_id=&lt;id&gt;&amp;next_url=&lt;url&gt;</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="span6">
+                                <h4>Recent Votes by Member</h4>
+                                <p>Reads the recent votes taken by the specified member.</p>
+                                <pre><code>http://calloncongress.sunlightfoundation.com/voice/member/votes/?language=&lt;lang&gt;&amp;bioguide_id=&lt;id&gt;&amp;next_url=&lt;url&gt;</code></pre>
+                            </div>
+                            <div class="span6">
+                                <h4>Call Member&rsquo;s Office</h4>
+                                <p>Connects the call to the member&rsquo;s DC office. The <code>&lt;next_url&gt;</code> parameter is not supported on this twimlet as forwarding the call ends the Twilio application flow.</p>
+                                <pre><code>http://calloncongress.sunlightfoundation.com/voice/member/call/?language=&lt;lang&gt;&amp;bioguide_id=&lt;id&gt;</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="span6">
+                                <h4>List of Upcoming Bills in Congress</h4>
+                                <p>Reads a list of bills that are up for consideration in the House and Senate.</p>
+                                <pre><code>http://calloncongress.sunlightfoundation.com/voice/bills/upcoming/?language=&lt;lang&gt;&amp;next_url=&lt;url&gt;</code></pre>
+                            </div>
+                            <div class="span6"><h4>Find Local Election Office</h4>
+                                <p>Reads the contact information for election offices within the specified zipcode.</p>
+                                <pre><code>http://calloncongress.sunlightfoundation.com/voice/voting/call/?language=&lt;lang&gt;&amp;zipcode=&lt;zipcode&gt;&amp;next_url=&lt;error_url&gt;</code></pre>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
