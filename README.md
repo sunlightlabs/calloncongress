@@ -40,12 +40,46 @@ Call on Congress supports a default language set of English, Spanish, and Espera
 
 ## Twimlets
 
-/member/bio/?language=<lang>&bioguide_id=<id>&next=<url>
-/member/donors/?language=<lang>&bioguide_id=<id>&next=<url>
-/member/votes/?language=<lang>&bioguide_id=<id>&next=<url>
-/member/call/?language=<lang>&bioguide_id=<id>&next=<url>
+A number of [twimlets](https://www.twilio.com/labs/twimlets) are provided for use in your own applications. The following variables are used in the twimlet URLs:
 
-/bills/upcoming/?language=<lang>&next=<url>
+* `<lang>` Language, must be one of *en*, *es*, or *eo*.
+* `<id>` Bioguide ID for the member of Congress. Can be found at the [Biographical Directory of the US Congress](http://bioguide.congress.gov/biosearch/biosearch.asp).
+* `<url>` A valid URL for redirection after the twimlet completes.
+* `<zipcode>` A valid five-digit zipcode.
 
-/voting/call/?language=<lang>&zipcode=<zipcode>&next=<error_url>
+### Member Biography
+
+Reads a short biography of the specified member.
+
+    /voice/member/bio/?language=<lang>&bioguide_id=<id>&next_url=<url>
+
+### Top Campaign Donors for a Member
+
+Reads the top ten contributors to the member's campaign for the current election cycle.
+
+	/voice/member/donors/?language=<lang>&bioguide_id=<id>&next_url=<url>
+
+### Recent Votes by Member
+
+Reads the recent votes taken by the specified member.
+
+    /voice/member/votes/?language=<lang>&bioguide_id=<id>&next_url=<url>
+
+### Call Member's Office
+
+Connects the call to the member's DC office. The `<next_url>` parameter is not supported on this twimlet as forwarding the call ends the Twilio application flow.
+
+    /voice/member/call/?language=<lang>&bioguide_id=<id>
+
+### List of Upcoming Bills in Congress
+
+Reads a list of bills that are up for consideration in the House and Senate.
+
+    /voice/bills/upcoming/?language=<lang>&next_url=<url>
+
+### Find Local Election Office
+
+Reads the contact information for election offices within the specified zipcode.
+
+    /voice/voting/call/?language=<lang>&zipcode=<zipcode>&next_url=<error_url>
 
