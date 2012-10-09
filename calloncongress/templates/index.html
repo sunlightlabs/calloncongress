@@ -15,24 +15,33 @@
         <link rel="stylesheet" href="http://assets.sunlightfoundation.com/sfapp/static/css/bootstrap.min.css">
         <link rel="stylesheet" href="http://assets.sunlightfoundation.com/sfapp/static/css/sfapp.css">
         <style>
+            #congressContent { background: url(http://sunlight-assets.s3.amazonaws.com/calloncongress/site/images/bg_line.png) 315px top repeat-y;}
+            #subInfo { padding-left: 40px; }
+            .moduleMed { margin-bottom: 30px; }
             a { color: #C9A706; }
             fieldset { margin-bottom: 3em; }
             fieldset p { margin: 1em 0; }
             fieldset ul { padding-top: 2em; }
             .form-actions, .well { background-color: #f8f7f6; }
-            header { background: url(http://sunlight-assets.s3.amazonaws.com/calloncongress/site/images/bg_breakLine.png) left bottom repeat-x; padding-bottom: 5px; margin-bottom: 40px;}
-            h1 { background: url(http://sunlight-assets.s3.amazonaws.com/calloncongress/site/images/logo.png) top left no-repeat; width: 396px; height: 63px; text-indent: -9999px; margin-bottom: 10px; }
-            #featureArea { background: url(http://sunlight-assets.s3.amazonaws.com/calloncongress/site/images/bg_lgBreakLine.png) left bottom repeat-x; padding-bottom: 20px; margin-bottom: 45px;}
-            #featureText { background: url(http://sunlight-assets.s3.amazonaws.com/calloncongress/site/images/bg_featureText.png) left top no-repeat; width: 261px; height: 314px; margin-top: 35px;}
-            #phone { background: url(http://sunlight-assets.s3.amazonaws.com/calloncongress/site/images/bg_phone.png) left top no-repeat; width: 332px; height: 40px; margin: 20px 0 15px; }
-            .justifyText { text-align:justify; font-size: 130%; line-height: 25px; color: #82807d; width: 335px;}
-            #secondaryText { margin-top: 60px;}
+            h1 { background: url(http://sunlight-assets.s3.amazonaws.com/calloncongress/site/images/logo.png) top left no-repeat; width: 269px; height: 232px; text-indent: -9999px; margin-bottom: 35px; padding-bottom: 35px; border-bottom: 6px solid #1a3440; }
+            #featureText { background: url(http://sunlight-assets.s3.amazonaws.com/calloncongress/site/images/bg_featureText.png) left top no-repeat; width: 265px; height: 323px; margin-bottom: 35px;}
+            .justifyText { font-size: 130%; line-height: 25px; color: #82807d;}
+            #secondaryText { margin-top: 115px;}
             .explainatoryText .span3 {  border-right: 1px solid #d1d0cb; margin-right: 15px; padding-right: 30px;}
-            #phoneImg { margin-left: 10px;}
             .sharing > div { display: block; float: right; }
             .sharing-tw { margin-right: 0.9em; }
-            .twimlets { margin-top: 5em; }
-            .twimlets .span6 { margin-top: 2em; margin-bottom: 1em; }
+            #promoMaterial li { float: left; margin-right: 20px; }
+            #promoMaterial img { margin-bottom: 10px; }
+            #postcard { width: 151px; }
+            #magnet { width: 200px; }
+            .privacyText { color: #afafad; }
+            h3 { font-family: 'Helvetica Neue', Helvetica, Arial, san-serif; text-transform: uppercase; font-weight: bold; color: #2a515e; }
+            #phone {
+            background: url(http://sunlight-assets.s3.amazonaws.com/calloncongress/site/images/bg_phone.png) left top no-repeat;
+            width: 332px;
+            height: 40px;
+            margin: 20px 0 15px;
+            }
         </style>
         <script type="text/javascript" src="http://use.typekit.com/tab6neo.js"></script>
         <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
@@ -55,107 +64,107 @@
                 <a class="sf-logo" href="http://www.sunlightfoundation.com">Sunlight Foundation</a>
             </div>
         </div>
-        <div class="container">
-            <header class="row">
-                <div class="span9">
-                    <h1><a href="/">Call on Congress</a></h1>
+        <div class="container" id="congressContent">
+            <div class="row">
+                <div class="span4">
+                    <header>
+                        <h1><a href="/">Call on Congress</a></h1>
+                    </header>
+                    <p class="textReplace" id="featureText">
+                        You can call a phone number to order pizza. You can call Mom when you are feeling blue. But what about when you want to know what’s happening in our nation’s capital?
+                    </p>
+                    <a href="http://www.twilio.com/" style="margin-left: 50px; text: decoration: none; display: block; width: 166px; height: 0; overflow: hidden; padding-top: 31px; background: url(http://www.twilio.com/packages/company/img/logos_icon_poweredbysmall.png) no-repeat;">powered by twilio™</a>
                 </div>
-                <div class="sharing span3">
-
-                    <div class="sharing-gp">
-                        <div class="g-plusone" data-size="tall"></div>
-                    </div>
-
-                    <div class="sharing-tw">
-                        <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://calloncongress.sunlightfoundation.com/" data-text="Check out #CallonCongress, @sunfoundation's new tool to connect with Congress via phone. 1-888-907-6886 #opengov" data-lang="en" data-count="vertical">Tweet</a>
-                    </div>
-
-                    <div class="sharing-fb">
-                        <div class="fb-like" data-href="http://sunlightfoundation.com/calloncongress/" data-send="false" data-layout="box_count" data-width="60" data-show-faces="false"></div>
-                    </div>
-
-                </div>
-            </header>
-            <div id="content" class="clearfix">
-                <div id="featureArea" class="row">
-                    <div class="span4">
-                        <p class="textReplace" id="featureText">
-                            You can call a phone number to order pizza. You can call Mom when you are feeling blue. But what about when you want to know what’s happening in our nation’s capital?
-                        </p>
-                    </div>
-                    <div class="span3">
-                        <img id="phoneImg" alt="flip phone" src="http://sunlight-assets.s3.amazonaws.com/calloncongress/site/images/img_phone.png">
-                    </div>
-                    <div class="span4" id="secondaryText">
-                        <p class="justifyText">Call on Congress is a free telephone service that helps you learn more about what Congress is doing.</p>
-                        <p class="justifyText">
-                            <span id="phone" class="textReplace">Simply dial 1-888-907-6886</span> to find out how your representatives are voting on bills and raising campaign money. You can also be connected with your lawmakers’ Capitol Hill offices or get details on where to vote on Election Day.
-                        </p>
-                        <a href="http://www.twilio.com/" style="text: decoration: none; display: inline-block; width: 166px; height: 0; overflow: hidden; padding-top: 31px; background: url(http://www.twilio.com/packages/company/img/logos_icon_poweredbysmall.png) no-repeat;">powered by twilio™</a>
-                    </div>
-                </div>
-                <div class="explainatoryText row">
-                    <div class="span3">
-                        <p class="tip">Available in both English and Spanish, one phone call provides you with instant information on how Congress is representing you in Washington, D.C.</p>
-                    </div>
-                    <div class="span7">
-                        <p>The Sunlight Foundation created Call on Congress to help bridge the “digital divide” by giving anyone with a phone line a free and meaningful way to understand their government and hold elected officials accountable.</p>
-                        <p>If you are a non-profit, community or advocacy group interested in learning more about Call on Congress, please contact Amy Ngai at angai@sunlightfoundation.com.</p>
-                    </div>
-                </div>
-                <div class="row twimlets">
-                    <div class="span12">
-                        <h3>Use Call on Congress in your own Twilio applications</h3>
-
-                        <p>A number of <a href="https://www.twilio.com/labs/twimlets">twimlets</a> are provided for use in your own applications. The following parameters are used in the twimlet URLs:</p>
-
-                        <ul>
-                        <li><code>&lt;lang&gt;</code> Language, must be one of <em>en</em>, <em>es</em>, or <em>eo</em>.</li>
-                        <li><code>&lt;id&gt;</code> Bioguide ID for the member of Congress. Can be found at the <a href="http://bioguide.congress.gov/biosearch/biosearch.asp">Biographical Directory of the US Congress</a>.</li>
-                        <li><code>&lt;url&gt;</code> A valid URL for redirection after the twimlet completes.</li>
-                        <li><code>&lt;zipcode&gt;</code> A valid five-digit zipcode.</li>
-                        </ul>
-
-                        <div class="row">
-                            <div class="span6">
-                                <h4>Member Biography</h4>
-                                <p>Reads a short biography of the specified member.</p>
-                                <pre><code>http://calloncongress.sunlightfoundation.com/voice/member/bio/?language=&lt;lang&gt;&amp;bioguide_id=&lt;id&gt;&amp;next_url=&lt;url&gt;</code></pre>
+                <div class="span8">
+                    <div id="subInfo">
+                        <div class="sharing clearfix">
+                            <div class="sharing-gp">
+                                <div class="g-plusone" data-size="tall"></div>
                             </div>
-                            <div class="span6">
-                                <h4>Top Campaign Donors for a Member</h4>
-                                <p>Reads the top ten contributors to the member&rsquo;s campaign for the current election cycle.</p>
-                                <pre><code>http://calloncongress.sunlightfoundation.com/voice/member/donors/?language=&lt;lang&gt;&amp;bioguide_id=&lt;id&gt;&amp;next_url=&lt;url&gt;</code></pre>
+
+                            <div class="sharing-tw">
+                                <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://calloncongress.sunlightfoundation.com/" data-text="Check out #CallonCongress, @sunfoundation's new tool to connect with Congress via phone. 1-888-907-6886 #opengov" data-lang="en" data-count="vertical">Tweet</a>
+                            </div>
+
+                            <div class="sharing-fb">
+                                <div class="fb-like" data-href="http://sunlightfoundation.com/calloncongress/" data-send="false" data-layout="box_count" data-width="60" data-show-faces="false"></div>
                             </div>
                         </div>
-
-                        <div class="row">
-                            <div class="span6">
-                                <h4>Recent Votes by Member</h4>
-                                <p>Reads the recent votes taken by the specified member.</p>
-                                <pre><code>http://calloncongress.sunlightfoundation.com/voice/member/votes/?language=&lt;lang&gt;&amp;bioguide_id=&lt;id&gt;&amp;next_url=&lt;url&gt;</code></pre>
+                        <div id="secondaryText">
+                            <div class="module">
+                                <div class="module">
+                                    <div class="moduleMed">
+                                        <p class="justifyText">Call on Congress is a free telephone service that helps you learn more about what Congress is doing.</p>
+                                        <p class="justifyText">
+                                            <span id="phone" class="textReplace">Simply dial 1-888-907-6886</span> to find out how your representatives are voting on bills and raising campaign money. You can also be connected with your lawmakers’ Capitol Hill offices or get details on where to vote on Election Day.
+                                        </p>
+                                    </div>
+                                    <p class="tip">Available in both English and Spanish, one phone call provides you with instant information on how Congress is representing you in Washington, D.C.</p>
+                                </div>
+                                <div class="privacyText">
+                                    <p>The Sunlight Foundation created Call on Congress to help bridge the “digital divide” by giving anyone with a phone line a free and meaningful way to understand their government and hold elected officials accountable.</p>
+                                    <p>If you are a non-profit, community or advocacy group interested in learning more about Call on Congress, please contact Amy Ngai at angai@sunlightfoundation.com.</p>
+                                </div>
                             </div>
-                            <div class="span6">
-                                <h4>Call Member&rsquo;s Office</h4>
-                                <p>Connects the call to the member&rsquo;s DC office. The <code>&lt;next_url&gt;</code> parameter is not supported on this twimlet as forwarding the call ends the Twilio application flow.</p>
-                                <pre><code>http://calloncongress.sunlightfoundation.com/voice/member/call/?language=&lt;lang&gt;&amp;bioguide_id=&lt;id&gt;</code></pre>
+                            <h3>Want to Help?</h3>
+                            <div class="module clearfix" id="promoMaterial">
+                                <h4>Download Our Promotional Materials</h4>
+                                <ul class="unstyled">
+                                    <li id="postcard">
+                                        <img src="http://sunlight-assets.s3.amazonaws.com/calloncongress/site/images/img_postcard.png" />
+                                        <a href="http://sunlight-assets.s3.amazonaws.com/calloncongress/site/images/callCongress_postcard.pdf">Download Postcard (PDF)</a>
+                                    </li>
+                                    <li id="magnet">
+                                        <img src="http://sunlight-assets.s3.amazonaws.com/calloncongress/site/images/img_magnet.png" />
+                                        <a href="http://sunlight-assets.s3.amazonaws.com/calloncongress/site/images/callCongress_card.pdf">Download Magnet/Business Card (PDF)</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="module">
+                                <div class="moduleMed">
+                                    <h4>Use Call on Congress in your own Twilio applications</h4>
+                                    <p>A number of <a href="https://www.twilio.com/labs/twimlets">twimlets</a> are provided for use in your own applications. The following parameters are used in the twimlet URLs:</p>
+                                    <ul>
+                                        <li><code>&lt;lang&gt;</code> Language, must be one of <em>en</em>, <em>es</em>, or <em>eo</em>.</li>
+                                        <li><code>&lt;id&gt;</code> Bioguide ID for the member of Congress. Can be found at the <a href="http://bioguide.congress.gov/biosearch/biosearch.asp">Biographical Directory of the US Congress</a>.</li>
+                                        <li><code>&lt;url&gt;</code> A valid URL for redirection after the twimlet completes.</li>
+                                        <li><code>&lt;zipcode&gt;</code> A valid five-digit zipcode.</li>
+                                    </ul>
+                                </div>
+                                <div class="moduleMed">
+                                    <h5>Member Biography</h5>
+                                    <p>Reads a short biography of the specified member.</p>
+                                    <pre><code>http://calloncongress.sunlightfoundation.com/voice/member/bio/?language=&lt;lang&gt;&amp;bioguide_id=&lt;id&gt;&amp;next_url=&lt;url&gt;</code></pre>
+                                </div>    
+                                <div class="moduleMed">
+                                    <h5>Top Campaign Donors for a Member</h5>
+                                    <p>Reads the top ten contributors to the member&rsquo;s campaign for the current election cycle.</p>
+                                    <pre><code>http://calloncongress.sunlightfoundation.com/voice/member/donors/?language=&lt;lang&gt;&amp;bioguide_id=&lt;id&gt;&amp;next_url=&lt;url&gt;</code></pre>
+                                </div>
+                                <div class="moduleMed">
+                                    <h5>Recent Votes by Member</h5>
+                                    <p>Reads the recent votes taken by the specified member.</p>
+                                    <pre><code>http://calloncongress.sunlightfoundation.com/voice/member/votes/?language=&lt;lang&gt;&amp;bioguide_id=&lt;id&gt;&amp;next_url=&lt;url&gt;</code></pre>
+                                </div>
+                                <div class="moduleMed">
+                                    <h5>Call Member&rsquo;s Office</h5>
+                                    <p>Connects the call to the member&rsquo;s DC office. The <code>&lt;next_url&gt;</code> parameter is not supported on this twimlet as forwarding the call ends the Twilio application flow.</p>
+                                    <pre><code>http://calloncongress.sunlightfoundation.com/voice/member/call/?language=&lt;lang&gt;&amp;bioguide_id=&lt;id&gt;</code></pre>
+                                </div>
+                                <div class="moduleMed">
+                                    <h5>List of Upcoming Bills in Congress</h5>
+                                    <p>Reads a list of bills that are up for consideration in the House and Senate.</p>
+                                    <pre><code>http://calloncongress.sunlightfoundation.com/voice/bills/upcoming/?language=&lt;lang&gt;&amp;next_url=&lt;url&gt;</code></pre>
+                                </div>
+                                <div class="moduleMed">
+                                    <h5>Find Local Election Office</h5>
+                                    <p>Reads the contact information for election offices within the specified zipcode.</p>
+                                    <pre><code>http://calloncongress.sunlightfoundation.com/voice/voting/call/?language=&lt;lang&gt;&amp;zipcode=&lt;zipcode&gt;&amp;next_url=&lt;error_url&gt;</code></pre>
+                                </div>
                             </div>
                         </div>
-
-                        <div class="row">
-                            <div class="span6">
-                                <h4>List of Upcoming Bills in Congress</h4>
-                                <p>Reads a list of bills that are up for consideration in the House and Senate.</p>
-                                <pre><code>http://calloncongress.sunlightfoundation.com/voice/bills/upcoming/?language=&lt;lang&gt;&amp;next_url=&lt;url&gt;</code></pre>
-                            </div>
-                            <div class="span6"><h4>Find Local Election Office</h4>
-                                <p>Reads the contact information for election offices within the specified zipcode.</p>
-                                <pre><code>http://calloncongress.sunlightfoundation.com/voice/voting/call/?language=&lt;lang&gt;&amp;zipcode=&lt;zipcode&gt;&amp;next_url=&lt;error_url&gt;</code></pre>
-                            </div>
-                        </div>
-
                     </div>
-                </div>
+                </div>    
             </div>
         </div>
         <div class="sf-footerWrapper">
