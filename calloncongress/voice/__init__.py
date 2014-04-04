@@ -303,8 +303,7 @@ def bill():
         return r
 
     with r.gather(numDigits=1, timeout=settings.INPUT_TIMEOUT) as rg:
-        rg.say("""Press 1 to get text message updates about this bill on your mobile phone.
-                  Press 2 to search for another bill.""")
+        rg.say("""Press 1 to search for another bill.""")
         rg.say("""To return to the previous menu, press 9""")
         rg.say("""Press 0 to return to the main menu.""")
 
