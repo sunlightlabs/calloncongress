@@ -3,8 +3,7 @@ gunicorn
 requests
 twilio==3.3.6
 python-transparencydata
-python-sunlightapi
-sunlight
+sunlight==1.2.4
 jinja2
 pymongo
 blinker
@@ -12,4 +11,3 @@ python-dateutil<2
 pyglot
 geopy
 newrelic
--e git+https://github.com/sunlightlabs/python-realtimecongress.git#egg=realtimecongress

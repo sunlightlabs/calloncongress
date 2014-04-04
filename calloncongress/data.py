@@ -6,17 +6,15 @@ import urllib
 from dateutil.parser import parse as dateparse
 from flask import g
 from influenceexplorer import InfluenceExplorer
-from sunlightapi import sunlight as sun
-from realtimecongress import RTC as rtc
 import requests
+import sunlight
 
 from calloncongress import settings
 from calloncongress.helpers import (bill_type_for, bill_number_for, state_for,
                                     rep_title_for, party_for)
 
-sun.apikey = settings.SUNLIGHT_KEY
+sunlight.config.API_KEY = settings.SUNLIGHT_KEY
 ie = InfluenceExplorer(settings.SUNLIGHT_KEY)
-rtc.apikey = settings.SUNLIGHT_KEY
 
 
 def legislators_for_zip(zipcode):
@@ -34,7 +32,7 @@ def legislators_for_zip(zipcode):
     if doc is None:
 
         # load from Sunlight Congress API if not cached locally
-        results = sun.legislators.allForZip(zipcode)
+        results = sunlight.congress.locate_legislators_by_zip(zipcode)
 
         # create a copy of the Legislator object dict
         legislators = [_format_legislator(r) for r in results]
@@ -64,13 +62,13 @@ def legislator_by_bioguide(bioguide):
 
     if doc is None:
         try:
-            legislator = _format_legislator(sun.legislators.get(bioguide_id=bioguide))
+            legislator = _format_legislator(sunlight.congress.legislator(bioguide))
             g.db.legislatorByBioguideId.insert({
                 'timestamp': g.now,
                 'bioguide_id': bioguide,
                 'legislator': legislator,
             })
-        except sun.SunlightApiError:
+        except sunlight.errors.SunlightException:
             legislator = None
     else:
         legislator = doc['legislator']
@@ -132,7 +130,7 @@ def committee_iter(committees):
 
 
 def committees(legislator):
-    comms = sun.committees.allForLegislator(g.legislator['bioguide_id'])
+    comms = sunlight.congress.committees(member_ids=g.legislator['bioguide_id'])
     names = " ".join("%s." % c for c in committee_iter(comms))
     return names
 
@@ -179,22 +177,22 @@ def recent_votes(legislator):
 def upcoming_bills(window=settings.UPCOMING_BILL_DAYS):
     timeframe = [datetime.datetime.today(), datetime.datetime.today() + datetime.timedelta(days=window)]
     formatstr = '%Y-%m-%d'
-    bills = rtc.getUpcomingBills(legislative_day__gte=timeframe[0].strftime(formatstr),
-                                 legislative_day__lte=timeframe[1].strftime(formatstr),
-                                 order='legislative_day',
-                                 sort='asc')
+    bills = sunlight.congress.upcoming_bills(
+                                legislative_day__gte=timeframe[0].strftime(formatstr),
+                                legislative_day__lte=timeframe[1].strftime(formatstr),
+                                order='legislative_day__asc')
 
     return [_format_bill(bill) for bill in bills]
 
 
 def bill_search(number=None):
-    bills = rtc.getBills(number=number, order='last_action_at', sort='desc')[:8]
+    bills = sunlight.congress.bills(number=number, order='last_action_at__desc')[:8]
     return [_format_bill(bill) for bill in bills]
 
 
 def get_bill_by_id(bill_id=None):
     try:
-        return _format_bill(rtc.getBills(bill_id=bill_id)[0])
+        return _format_bill(sunlight.congress.bills(bill_id=bill_id)[0])
     except IndexError:
         return None
 
