@@ -78,7 +78,10 @@ def legislator_by_bioguide(bioguide):
 
 def _format_legislator(l):
     try:
-        l = l.copy()
+        if hasattr(l, '__dict__'):
+            l = l.__dict__.copy()
+        else:
+            l = l.copy()
     except AttributeError:
         pass
     l['short_title'] = l['title']
@@ -227,9 +230,14 @@ def _format_bill(bill):
 
     sponsor = bill.get('sponsor')
     if sponsor:
-        bill_context.update(sponsor="Sponsored by: %s, %s, %s" % (_format_legislator(sponsor)['fullname'],
+        sponsor_party = sponsor.get('party')
+        sponsor_state = sponsor.get('state')
+        if sponsor_party and sponsor_state:
+            bill_context.update(sponsor="Sponsored by: %s, %s, %s" % (_format_legislator(sponsor)['fullname'],
                                                                   party_for(sponsor['party']),
                                                                   state_for(sponsor['state'])))
+        else:
+            bill_context.update(sponsor="Sponsored by: %s" % _format_legislator(sponsor)['fullname'])
 
     cosponsors = bill.get('cosponsors', [])
     if len(cosponsors):
