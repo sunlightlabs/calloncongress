@@ -78,7 +78,7 @@ def legislator_by_bioguide(bioguide):
 
 def _format_legislator(l):
     try:
-        l = l.__dict__.copy()
+        l = l.copy()
     except AttributeError:
         pass
     l['short_title'] = l['title']
@@ -198,7 +198,7 @@ def get_bill_by_id(bill_id=None):
 
 
 def _format_bill(bill):
-    bill = bill.__dict__.copy()
+    bill = bill.copy()
     btype = bill_type_for(bill['bill_id'])
     bnumber = bill.get('number') or bill_number_for(bill['bill_id'])
     bdate = bill.get('legislative_day') or bill.get('last_action_at')
