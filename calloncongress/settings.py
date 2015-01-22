@@ -12,6 +12,9 @@ UPCOMING_BILL_DAYS = 14
 INPUT_TIMEOUT = 10
 PROJECT_ROOT = os.path.dirname(os.path.realpath(__file__))
 
+import sunlight.services.congress
+sunlight.services.congress.API_ROOT = 'http://congress.api.sunlightfoundation.com'
+
 # Import local settings or from os.environ
 try:
     from calloncongress.local_settings import *
